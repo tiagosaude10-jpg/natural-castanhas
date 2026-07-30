@@ -1,5 +1,5 @@
-const CACHE='natural-castanhas-v1';
-const FILES=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./assets/logo.svg','./assets/icon-192.png','./assets/icon-512.png'];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));
-self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+const CACHE='natural-castanhas-v2';
+const FILES=['./','./index.html','./styles.css','./app.js','./module3.html','./module3.css','./module3.js','./manifest.webmanifest','./assets/logo.svg','./assets/icon-192.png','./assets/icon-512.png'];
+self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)))});
+self.addEventListener('activate',e=>e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))])));
+self.addEventListener('fetch',e=>{const url=new URL(e.request.url);if(e.request.mode==='navigate'&&(url.pathname.endsWith('/')||url.pathname.endsWith('/index.html'))){e.respondWith((async()=>{const r=await caches.match('./index.html')||await fetch('./index.html');let html=await r.text();html=html.replace('<button class="module-card locked"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e mercado</strong><small>Análise e inteligência comercial</small></button>','<button class="module-card featured" onclick="location.href=\'module3.html\'"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e inteligência de compra</strong><small>Cadastro, comparação e oportunidades</small></button>');return new Response(html,{headers:{'Content-Type':'text/html; charset=utf-8'}})})());return}e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))) });
