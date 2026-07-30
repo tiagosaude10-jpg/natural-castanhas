@@ -1,116 +1,49 @@
 const PURCHASES_KEY='naturalCastanhasPurchases';
 const INVESTORS_KEY='naturalCastanhasInvestors';
 const CAPITAL_KEY='naturalCastanhasCapital';
-const $=s=>document.querySelector(s);
-const $$=s=>[...document.querySelectorAll(s)];
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const brl=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
-let purchases=JSON.parse(localStorage.getItem(PURCHASES_KEY)||'[]');
+const today=()=>new Date().toISOString().slice(0,10);
+let purchases=JSON.parse(localStorage.getItem(PURCHASES_KEY)||'[]').map(p=>({...p,receipts:p.receipts||[],payments:p.payments||(p.paid?[{id:'legacy',date:p.date,amount:Number(p.paid),method:'Registro anterior',notes:''}]:[]),sourceType:p.sourceType||'Proprietário',investorId:p.investorId||'',cancelReason:p.cancelReason||''}));
 let investors=JSON.parse(localStorage.getItem(INVESTORS_KEY)||'[]');
-let capitalEntries=JSON.parse(localStorage.getItem(CAPITAL_KEY)||'[]');
-
-function saveAll(){
-  localStorage.setItem(PURCHASES_KEY,JSON.stringify(purchases));
-  localStorage.setItem(INVESTORS_KEY,JSON.stringify(investors));
-  localStorage.setItem(CAPITAL_KEY,JSON.stringify(capitalEntries));
-  render();
-}
-function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
-function openView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('.bottom-nav button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));window.scrollTo({top:0,behavior:'smooth'});}
-$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openView(b.dataset.open)));
-$$('.locked').forEach(b=>b.addEventListener('click',()=>toast('Este módulo será liberado nas próximas etapas.')));
-
-function capitalTotals(){
-  const total=capitalEntries.reduce((a,e)=>a+Number(e.amount||0),0);
-  const owner=capitalEntries.filter(e=>e.sourceType==='Proprietário').reduce((a,e)=>a+Number(e.amount||0),0);
-  const investor=capitalEntries.filter(e=>e.sourceType==='Investidor').reduce((a,e)=>a+Number(e.amount||0),0);
-  const cans=capitalEntries.reduce((a,e)=>a+Number(e.cans||0),0);
-  return {total,owner,investor,cans};
-}
-function purchaseTotals(){
-  const valid=purchases.filter(p=>p.status!=='Cancelada');
-  const purchased=valid.reduce((a,p)=>a+Number(p.quantity||0),0);
-  const total=valid.reduce((a,p)=>a+Number(p.total||0),0);
-  const paid=valid.reduce((a,p)=>a+Number(p.paid||0),0);
-  const open=valid.filter(p=>p.status!=='Finalizada').length;
-  const capital=capitalTotals().total;
-  return {purchased,total,paid,pending:Math.max(total-paid,0),open,available:Math.max(capital-total,0),capital};
-}
-function investorSummary(id){
-  const entries=capitalEntries.filter(e=>e.investorId===id);
-  return {amount:entries.reduce((a,e)=>a+Number(e.amount||0),0),cans:entries.reduce((a,e)=>a+Number(e.cans||0),0),entries:entries.length};
-}
-function badgeClass(status){if(status==='Preço em aberto')return'open';if(status==='Aguardando entrega'||status==='Aguardando pagamento')return'wait';if(status==='Recebida parcialmente')return'partial';return''}
-function formatDate(value){return value?new Date(value+'T12:00:00').toLocaleDateString('pt-BR'):'—'}
-
-function renderPurchases(){
-  const t=purchaseTotals();
-  $('#metricAvailable').textContent=brl.format(t.available);
-  $('#metricPurchased').textContent=`${t.purchased.toLocaleString('pt-BR')} latas`;
-  $('#metricStock').textContent=`${t.purchased.toLocaleString('pt-BR')} latas`;
-  $('#metricOpen').textContent=t.open;
-  $('#purchaseCapital').textContent=brl.format(t.capital);
-  $('#reservedValue').textContent=brl.format(t.total);
-  $('#usedValue').textContent=brl.format(t.paid);
-  $('#availableValue').textContent=brl.format(t.available);
-  const q=$('#searchInput').value.toLowerCase();
-  const status=$('#statusFilter').value;
-  const filtered=purchases.filter(p=>(status==='all'||p.status===status)&&(`${p.supplier} ${p.id}`.toLowerCase().includes(q)));
-  $('#purchaseCount').textContent=`${filtered.length} ${filtered.length===1?'registro':'registros'}`;
-  $('#emptyState').style.display=filtered.length?'none':'block';
-  $('#purchaseList').innerHTML=filtered.map(p=>`<article class="purchase-item"><div class="purchase-item-top"><div><h3>Compra #${p.id}</h3><span class="badge ${badgeClass(p.status)}">${p.status}</span></div><strong>${brl.format(p.total)}</strong></div><p>Fornecedor: <strong>${p.supplier}</strong></p><p>Quantidade: <strong>${Number(p.quantity).toLocaleString('pt-BR')} latas</strong> • ${p.priceType}</p><p>Compra em ${formatDate(p.date)}${p.delivery?` • Entrega: ${formatDate(p.delivery)}`:''}</p><p>Pago: <strong>${brl.format(p.paid)}</strong> • Saldo: <strong>${brl.format(Math.max(p.total-p.paid,0))}</strong></p>${p.notes?`<p>${p.notes}</p>`:''}<div class="item-actions">${p.status!=='Finalizada'?`<button class="finish" onclick="finishPurchase('${p.id}')">Finalizar</button>`:''}<button class="delete" onclick="deletePurchase('${p.id}')">Excluir</button></div></article>`).join('');
-}
-
-function renderCapital(){
-  const c=capitalTotals();
-  $('#metricCapital').textContent=brl.format(c.total);
-  $('#metricInvestors').textContent=investors.length;
-  $('#capitalTotal').textContent=brl.format(c.total);
-  $('#ownerCapital').textContent=brl.format(c.owner);
-  $('#investorCapital').textContent=brl.format(c.investor);
-  $('#convertedCans').textContent=c.cans.toLocaleString('pt-BR',{maximumFractionDigits:2});
-  $('#investorCount').textContent=`${investors.length} ${investors.length===1?'cadastrado':'cadastrados'}`;
-  $('#investorEmpty').style.display=investors.length?'none':'block';
-  $('#investorList').innerHTML=investors.map(i=>{const s=investorSummary(i.id);return `<article class="investor-card"><div class="investor-head"><div><h3>${i.name}</h3><span class="badge">Ativo</span></div><button class="delete icon-only" onclick="deleteInvestor('${i.id}')">×</button></div><p>${i.document||'Documento não informado'}${i.phone?` • ${i.phone}`:''}</p><div class="investor-metrics"><div><span>Total investido</span><strong>${brl.format(s.amount)}</strong></div><div><span>Saldo em latas</span><strong>${s.cans.toLocaleString('pt-BR',{maximumFractionDigits:2})}</strong></div><div><span>Aportes</span><strong>${s.entries}</strong></div></div>${i.notes?`<p>${i.notes}</p>`:''}</article>`}).join('');
-  $('#capitalCount').textContent=`${capitalEntries.length} ${capitalEntries.length===1?'registro':'registros'}`;
-  $('#capitalEmpty').style.display=capitalEntries.length?'none':'block';
-  $('#capitalList').innerHTML=capitalEntries.map(e=>{const investor=investors.find(i=>i.id===e.investorId);return `<article class="capital-item"><div class="purchase-item-top"><div><h3>${e.sourceType}</h3><span class="badge">${formatDate(e.date)}</span></div><strong>${brl.format(e.amount)}</strong></div><p>${e.sourceType==='Investidor'?`Investidor: <strong>${investor?investor.name:'Cadastro removido'}</strong>`:'Capital próprio do proprietário'}</p><p>Conversão: <strong>${Number(e.cans||0).toLocaleString('pt-BR',{maximumFractionDigits:2})} latas</strong>${e.canPrice?` • ${brl.format(e.canPrice)} por lata`:''}</p>${e.notes?`<p>${e.notes}</p>`:''}<div class="item-actions"><button class="delete" onclick="deleteCapital('${e.id}')">Excluir</button></div></article>`}).join('');
-  updateInvestorSelect();
-}
-function render(){renderPurchases();renderCapital();}
-
-window.finishPurchase=id=>{purchases=purchases.map(p=>p.id===id?{...p,status:'Finalizada',paid:p.total}:p);saveAll();toast('Compra finalizada.');}
-window.deletePurchase=id=>{if(confirm('Deseja excluir esta compra?')){purchases=purchases.filter(p=>p.id!==id);saveAll();toast('Compra excluída.')}}
-window.deleteInvestor=id=>{if(capitalEntries.some(e=>e.investorId===id)){toast('Não é possível excluir: existem aportes vinculados.');return}if(confirm('Deseja excluir este investidor?')){investors=investors.filter(i=>i.id!==id);saveAll();toast('Investidor excluído.')}}
-window.deleteCapital=id=>{if(confirm('Deseja excluir esta movimentação de capital?')){capitalEntries=capitalEntries.filter(e=>e.id!==id);saveAll();toast('Movimentação excluída.')}}
-
-const purchaseDialog=$('#purchaseDialog');
-function openPurchaseDialog(){const f=$('#purchaseForm');f.reset();f.elements.date.value=new Date().toISOString().slice(0,10);purchaseDialog.showModal()}
-$('#newPurchaseButton').addEventListener('click',openPurchaseDialog);
-$('#quickAdd').addEventListener('click',()=>{openView('purchasesView');openPurchaseDialog()});
-$('#closeDialog').addEventListener('click',()=>purchaseDialog.close());
-$('#cancelDialog').addEventListener('click',()=>purchaseDialog.close());
-$('#purchaseForm').addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.currentTarget);const quantity=Number(fd.get('quantity'));const unitPrice=Number(fd.get('unitPrice')||0);const total=quantity*unitPrice;const available=purchaseTotals().available;if(total>available&&fd.get('priceType')==='Preço fechado'){toast('Capital disponível insuficiente para esta compra.');return}const id=String(Date.now()).slice(-6);purchases.unshift({id,supplier:fd.get('supplier').trim(),date:fd.get('date'),quantity,priceType:fd.get('priceType'),unitPrice,total,paid:Number(fd.get('paid')||0),status:fd.get('status'),delivery:fd.get('delivery'),notes:fd.get('notes').trim()});saveAll();purchaseDialog.close();toast('Compra cadastrada com sucesso.');});
-$('#searchInput').addEventListener('input',renderPurchases);
-$('#statusFilter').addEventListener('change',renderPurchases);
-
-const investorDialog=$('#investorDialog');
-$('#newInvestorButton').addEventListener('click',()=>{const f=$('#investorForm');f.reset();investorDialog.showModal()});
-$('#closeInvestorDialog').addEventListener('click',()=>investorDialog.close());
-$('#cancelInvestorDialog').addEventListener('click',()=>investorDialog.close());
-$('#investorForm').addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.currentTarget);investors.unshift({id:String(Date.now()),name:fd.get('name').trim(),document:fd.get('document').trim(),phone:fd.get('phone').trim(),email:fd.get('email').trim(),notes:fd.get('notes').trim()});saveAll();investorDialog.close();toast('Investidor cadastrado com sucesso.');});
-
-const capitalDialog=$('#capitalDialog');
-function updateInvestorSelect(){const select=$('#investorSelect');const current=select.value;select.innerHTML='<option value="">Selecione</option>'+investors.map(i=>`<option value="${i.id}">${i.name}</option>`).join('');if(investors.some(i=>i.id===current))select.value=current;}
-function toggleInvestorField(){const isInvestor=$('#sourceType').value==='Investidor';$('#investorField').style.display=isInvestor?'block':'none';$('#investorSelect').required=isInvestor;}
-function updateCanPreview(){const amount=Number($('#capitalForm').elements.amount.value||0);const price=Number($('#capitalForm').elements.canPrice.value||0);$('#canPreview').value=price>0?(amount/price).toLocaleString('pt-BR',{maximumFractionDigits:2}):'0';}
-$('#newSourceButton').addEventListener('click',()=>{const f=$('#capitalForm');f.reset();f.elements.date.value=new Date().toISOString().slice(0,10);toggleInvestorField();updateInvestorSelect();updateCanPreview();capitalDialog.showModal()});
-$('#closeCapitalDialog').addEventListener('click',()=>capitalDialog.close());
-$('#cancelCapitalDialog').addEventListener('click',()=>capitalDialog.close());
-$('#sourceType').addEventListener('change',toggleInvestorField);
-$('#capitalForm').elements.amount.addEventListener('input',updateCanPreview);
-$('#capitalForm').elements.canPrice.addEventListener('input',updateCanPreview);
-$('#capitalForm').addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(e.currentTarget);const sourceType=fd.get('sourceType');const investorId=fd.get('investorId');if(sourceType==='Investidor'&&!investorId){toast('Selecione o investidor.');return}const amount=Number(fd.get('amount'));const canPrice=Number(fd.get('canPrice')||0);const cans=canPrice>0?amount/canPrice:0;capitalEntries.unshift({id:String(Date.now()),sourceType,investorId:sourceType==='Investidor'?investorId:'',date:fd.get('date'),amount,canPrice,cans,notes:fd.get('notes').trim()});saveAll();capitalDialog.close();toast('Capital registrado com sucesso.');});
-
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.error));}
-toggleInvestorField();
-render();
+let capitalEntries=JSON.parse(localStorage.getItem(CAPITAL_KEY)||'[]').map(e=>({...e,movementType:e.movementType||'Entrada',reversed:!!e.reversed}));
+function saveAll(){localStorage.setItem(PURCHASES_KEY,JSON.stringify(purchases));localStorage.setItem(INVESTORS_KEY,JSON.stringify(investors));localStorage.setItem(CAPITAL_KEY,JSON.stringify(capitalEntries));render()}
+function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2400)}
+function openView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id));$$('.bottom-nav button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));scrollTo({top:0,behavior:'smooth'})}
+$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openView(b.dataset.open)));$$('.locked').forEach(b=>b.addEventListener('click',()=>toast('Este módulo será liberado nas próximas etapas.')));
+$$('[data-close]').forEach(b=>b.addEventListener('click',()=>document.getElementById(b.dataset.close).close()));
+const sign=e=>e.reversed?0:(e.movementType==='Retirada'?-1:1);
+function capitalTotals(){const active=capitalEntries.filter(e=>!e.reversed);const sum=(f,k)=>active.filter(f).reduce((a,e)=>a+sign(e)*Number(e[k]||0),0);return{total:sum(()=>true,'amount'),owner:sum(e=>e.sourceType==='Proprietário','amount'),investor:sum(e=>e.sourceType==='Investidor','amount'),cans:sum(e=>e.sourceType==='Investidor','cans')}}
+function paymentTotal(p){return(p.payments||[]).reduce((a,x)=>a+Number(x.amount||0),0)}
+function receiptTotals(p){return(p.receipts||[]).reduce((a,x)=>({received:a.received+Number(x.received||0),approved:a.approved+Number(x.approved||0),rejected:a.rejected+Number(x.rejected||0)}),{received:0,approved:0,rejected:0})}
+function purchaseTotal(p){return Number(p.total||Number(p.quantity||0)*Number(p.unitPrice||0))}
+function sourceCapital(type,investorId=''){return capitalEntries.filter(e=>!e.reversed&&e.sourceType===type&&(type!=='Investidor'||e.investorId===investorId)).reduce((a,e)=>a+sign(e)*Number(e.amount||0),0)}
+function sourceCommitted(type,investorId='',exclude=''){return purchases.filter(p=>p.id!==exclude&&p.status!=='Cancelada'&&p.sourceType===type&&(type!=='Investidor'||p.investorId===investorId)).reduce((a,p)=>a+purchaseTotal(p),0)}
+function sourceAvailable(type,investorId='',exclude=''){return sourceCapital(type,investorId)-sourceCommitted(type,investorId,exclude)}
+function purchaseTotals(){const valid=purchases.filter(p=>p.status!=='Cancelada'),capital=capitalTotals().total,total=valid.reduce((a,p)=>a+purchaseTotal(p),0),paid=valid.reduce((a,p)=>a+paymentTotal(p),0),stock=valid.reduce((a,p)=>a+receiptTotals(p).approved,0);return{purchased:valid.reduce((a,p)=>a+Number(p.quantity||0),0),stock,total,paid,pending:Math.max(total-paid,0),open:valid.filter(p=>p.status!=='Finalizada').length,available:capital-total,capital}}
+function investorSummary(id){const entries=capitalEntries.filter(e=>!e.reversed&&e.investorId===id),amount=entries.reduce((a,e)=>a+sign(e)*Number(e.amount||0),0),converted=entries.reduce((a,e)=>a+sign(e)*Number(e.cans||0),0),allocated=purchases.filter(p=>p.status!=='Cancelada'&&p.sourceType==='Investidor'&&p.investorId===id).reduce((a,p)=>a+Number(p.quantity||0),0);return{amount,converted,allocated,available:converted-allocated,entries:entries.length}}
+function formatDate(v){return v?new Date(v+'T12:00:00').toLocaleDateString('pt-BR'):'—'}
+function sourceLabel(p){if(p.sourceType==='Investidor'){const i=investors.find(x=>x.id===p.investorId);return i?`Investidor: ${i.name}`:'Investidor não localizado'}return'Capital próprio'}
+function statusFor(p){if(p.status==='Cancelada')return'Cancelada';const r=receiptTotals(p),paid=paymentTotal(p),total=purchaseTotal(p);if(p.priceType==='Preço em aberto'&&!p.priceClosedDate)return'Preço em aberto';if(r.received===0)return p.status==='Em negociação'?'Em negociação':'Aguardando entrega';if(r.received<Number(p.quantity))return'Recebida parcialmente';if(r.received>=Number(p.quantity)&&paid<total)return'Aguardando pagamento';if(r.received>=Number(p.quantity)&&paid>=total)return'Finalizada';return p.status||'Em negociação'}
+function badgeClass(s){if(s==='Preço em aberto')return'open';if(s==='Aguardando entrega'||s==='Aguardando pagamento')return'wait';if(s==='Recebida parcialmente')return'partial';if(s==='Cancelada')return'cancelled';return''}
+function renderPurchases(){const t=purchaseTotals();$('#metricAvailable').textContent=brl.format(t.available);$('#metricPurchased').textContent=`${t.purchased.toLocaleString('pt-BR')} latas`;$('#metricStock').textContent=`${t.stock.toLocaleString('pt-BR',{maximumFractionDigits:2})} latas`;$('#metricOpen').textContent=t.open;$('#purchaseCapital').textContent=brl.format(t.capital);$('#reservedValue').textContent=brl.format(t.total);$('#usedValue').textContent=brl.format(t.paid);$('#availableValue').textContent=brl.format(t.available);const q=$('#searchInput').value.toLowerCase(),filter=$('#statusFilter').value;const list=purchases.filter(p=>{const s=statusFor(p);return(filter==='all'||s===filter)&&(`${p.supplier} ${p.id}`.toLowerCase().includes(q))});$('#purchaseCount').textContent=`${list.length} ${list.length===1?'registro':'registros'}`;$('#emptyState').style.display=list.length?'none':'block';$('#purchaseList').innerHTML=list.map(p=>{const s=statusFor(p),r=receiptTotals(p),paid=paymentTotal(p),total=purchaseTotal(p),balance=Math.max(total-paid,0);return`<article class="purchase-item"><div class="purchase-item-top"><div><h3>Compra #${p.id}</h3><span class="badge ${badgeClass(s)}">${s}</span></div><strong>${brl.format(total)}</strong></div><p>Fornecedor: <strong>${p.supplier}</strong></p><p>Negociado: <strong>${Number(p.quantity).toLocaleString('pt-BR')} latas</strong> • ${p.priceType}</p><p>Recebido: <strong>${r.received.toLocaleString('pt-BR',{maximumFractionDigits:2})}</strong> • Aprovado: <strong>${r.approved.toLocaleString('pt-BR',{maximumFractionDigits:2})}</strong> • Recusado: <strong>${r.rejected.toLocaleString('pt-BR',{maximumFractionDigits:2})}</strong></p><p>${sourceLabel(p)}</p><p>Pago: <strong>${brl.format(paid)}</strong> • Saldo: <strong>${brl.format(balance)}</strong></p>${p.cancelReason?`<p class="warning-text">Motivo: ${p.cancelReason}</p>`:''}<div class="item-actions">${s!=='Cancelada'?`<button onclick="openReceipt('${p.id}')">Recebimento</button><button onclick="openPayment('${p.id}')">Pagamento</button>${p.priceType==='Preço em aberto'&&!p.priceClosedDate?`<button onclick="openClosePrice('${p.id}')">Fechar preço</button>`:''}<button class="delete" onclick="openCancelPurchase('${p.id}')">Cancelar</button>`:''}</div><details><summary>Ver histórico</summary><div class="history"><strong>Recebimentos</strong>${(p.receipts||[]).length?(p.receipts||[]).map(x=>`<p>${formatDate(x.date)} — ${x.approved} aprovadas de ${x.received} recebidas</p>`).join(''):'<p>Nenhum recebimento.</p>'}<strong>Pagamentos</strong>${(p.payments||[]).length?(p.payments||[]).map(x=>`<p>${formatDate(x.date)} — ${brl.format(x.amount)} (${x.method})</p>`).join(''):'<p>Nenhum pagamento.</p>'}</div></details></article>`}).join('')}
+function renderCapital(){const c=capitalTotals();$('#metricCapital').textContent=brl.format(c.total);$('#metricInvestors').textContent=investors.length;$('#capitalTotal').textContent=brl.format(c.total);$('#ownerCapital').textContent=brl.format(c.owner);$('#investorCapital').textContent=brl.format(c.investor);$('#convertedCans').textContent=c.cans.toLocaleString('pt-BR',{maximumFractionDigits:2});$('#investorCount').textContent=`${investors.length} ${investors.length===1?'cadastrado':'cadastrados'}`;$('#investorEmpty').style.display=investors.length?'none':'block';$('#investorList').innerHTML=investors.map(i=>{const s=investorSummary(i.id);return`<article class="investor-card"><div class="investor-head"><div><h3>${i.name}</h3><span class="badge">Ativo</span></div></div><p>${i.document||'Documento não informado'}${i.phone?` • ${i.phone}`:''}</p><div class="investor-metrics"><div><span>Capital líquido</span><strong>${brl.format(s.amount)}</strong></div><div><span>Total convertido</span><strong>${s.converted.toLocaleString('pt-BR',{maximumFractionDigits:2})} latas</strong></div><div><span>Latas vinculadas</span><strong>${s.allocated.toLocaleString('pt-BR',{maximumFractionDigits:2})}</strong></div><div><span>Disponíveis</span><strong>${s.available.toLocaleString('pt-BR',{maximumFractionDigits:2})}</strong></div></div><details><summary>Ver extrato</summary><div class="history">${capitalEntries.filter(e=>e.investorId===i.id).map(e=>`<p>${formatDate(e.date)} — ${e.movementType} ${brl.format(e.amount)}${e.reversed?' (estornada)':''}</p>`).join('')||'<p>Sem movimentações.</p>'}</div></details></article>`}).join('');$('#capitalCount').textContent=`${capitalEntries.length} ${capitalEntries.length===1?'registro':'registros'}`;$('#capitalEmpty').style.display=capitalEntries.length?'none':'block';$('#capitalList').innerHTML=capitalEntries.map(e=>{const i=investors.find(x=>x.id===e.investorId);return`<article class="capital-item ${e.reversed?'reversed':''}"><div class="purchase-item-top"><div><h3>${e.movementType} — ${e.sourceType}</h3><span class="badge">${formatDate(e.date)}</span></div><strong>${brl.format(e.amount)}</strong></div><p>${e.sourceType==='Investidor'?`Investidor: <strong>${i?i.name:'Cadastro removido'}</strong>`:'Capital próprio'}</p><p>Conversão: <strong>${Number(e.cans||0).toLocaleString('pt-BR',{maximumFractionDigits:2})} latas</strong>${e.canPrice?` • ${brl.format(e.canPrice)} por lata`:''}</p>${e.notes?`<p>${e.notes}</p>`:''}${e.reversed?'<p class="warning-text">Movimentação estornada</p>':`<div class="item-actions"><button class="delete" onclick="reverseCapital('${e.id}')">Estornar</button></div>`}</article>`}).join('');updateInvestorSelects()}
+function render(){renderPurchases();renderCapital()}
+function updateInvestorSelects(){['investorSelect','purchaseInvestorSelect'].forEach(id=>{const s=document.getElementById(id);if(!s)return;const cur=s.value;s.innerHTML='<option value="">Selecione</option>'+investors.map(i=>`<option value="${i.id}">${i.name}</option>`).join('');if(investors.some(i=>i.id===cur))s.value=cur})}
+function togglePurchaseInvestor(){const on=$('#purchaseSourceType').value==='Investidor';$('#purchaseInvestorField').style.display=on?'block':'none';$('#purchaseInvestorSelect').required=on}
+function toggleInvestorField(){const on=$('#sourceType').value==='Investidor';$('#investorField').style.display=on?'block':'none';$('#investorSelect').required=on;$('#capitalForm').elements.canPrice.required=on}
+function updateCanPreview(){const f=$('#capitalForm'),a=Number(f.elements.amount.value||0),p=Number(f.elements.canPrice.value||0);$('#canPreview').value=p>0?(a/p).toLocaleString('pt-BR',{maximumFractionDigits:2}):'0'}
+function openDialog(id,formId,purchaseId=''){const d=document.getElementById(id),f=document.getElementById(formId);f.reset();if(f.elements.date)f.elements.date.value=today();if(f.elements.purchaseId)f.elements.purchaseId.value=purchaseId;d.showModal()}
+$('#newPurchaseButton').onclick=()=>{openDialog('purchaseDialog','purchaseForm');togglePurchaseInvestor();updateInvestorSelects()};$('#quickAdd').onclick=()=>{openView('purchasesView');$('#newPurchaseButton').click()};$('#purchaseSourceType').onchange=togglePurchaseInvestor;
+$('#purchaseForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),type=f.get('sourceType'),investorId=f.get('investorId');if(type==='Investidor'&&!investorId)return toast('Selecione o investidor.');const quantity=Number(f.get('quantity')),unitPrice=Number(f.get('unitPrice')||0),priceType=f.get('priceType');if(priceType==='Preço fechado'&&unitPrice<=0)return toast('Informe o valor por lata.');const total=priceType==='Preço fechado'?quantity*unitPrice:0;if(total>sourceAvailable(type,investorId))return toast('Capital disponível insuficiente nesta origem.');purchases.unshift({id:String(Date.now()).slice(-6),supplier:f.get('supplier').trim(),date:f.get('date'),quantity,priceType,unitPrice,total,sourceType:type,investorId:type==='Investidor'?investorId:'',delivery:f.get('delivery'),notes:f.get('notes').trim(),status:priceType==='Preço em aberto'?'Preço em aberto':'Aguardando entrega',receipts:[],payments:[],priceClosedDate:'',cancelReason:''});saveAll();$('#purchaseDialog').close();toast('Compra cadastrada com sucesso.')};
+window.openReceipt=id=>openDialog('receiptDialog','receiptForm',id);window.openPayment=id=>openDialog('paymentDialog','paymentForm',id);window.openClosePrice=id=>openDialog('closePriceDialog','closePriceForm',id);window.openCancelPurchase=id=>openDialog('cancelPurchaseDialog','cancelPurchaseForm',id);
+$('#receiptForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),p=purchases.find(x=>x.id===f.get('purchaseId')),received=Number(f.get('received')),approved=Number(f.get('approved')),rejected=Number(f.get('rejected')||0);if(approved+rejected>received)return toast('Aprovado e recusado não podem superar o recebido.');if(receiptTotals(p).received+received>Number(p.quantity))return toast('O recebimento supera a quantidade negociada.');p.receipts.push({id:String(Date.now()),date:f.get('date'),received,approved,rejected,moisture:Number(f.get('moisture')||0),impurities:Number(f.get('impurities')||0),notes:f.get('notes').trim()});saveAll();$('#receiptDialog').close();toast('Recebimento registrado.')};
+$('#paymentForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),p=purchases.find(x=>x.id===f.get('purchaseId')),amount=Number(f.get('amount')),remaining=Math.max(purchaseTotal(p)-paymentTotal(p),0);if(amount>remaining)return toast('O pagamento supera o saldo da compra.');p.payments.push({id:String(Date.now()),date:f.get('date'),amount,method:f.get('method'),notes:f.get('notes').trim()});saveAll();$('#paymentDialog').close();toast('Pagamento registrado.')};
+$('#closePriceForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),p=purchases.find(x=>x.id===f.get('purchaseId')),price=Number(f.get('unitPrice')),total=Number(p.quantity)*price;if(total>sourceAvailable(p.sourceType,p.investorId,p.id))return toast('Capital insuficiente para fechar este preço.');p.unitPrice=price;p.total=total;p.priceClosedDate=f.get('date');p.priceType='Preço fechado';p.priceNotes=f.get('notes').trim();saveAll();$('#closePriceDialog').close();toast('Preço fechado com sucesso.')};
+$('#cancelPurchaseForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),p=purchases.find(x=>x.id===f.get('purchaseId'));p.status='Cancelada';p.cancelReason=f.get('reason').trim();p.cancelledAt=today();saveAll();$('#cancelPurchaseDialog').close();toast('Compra cancelada e mantida no histórico.')};
+$('#searchInput').oninput=renderPurchases;$('#statusFilter').onchange=renderPurchases;
+$('#newInvestorButton').onclick=()=>openDialog('investorDialog','investorForm');$('#investorForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget);investors.unshift({id:String(Date.now()),name:f.get('name').trim(),document:f.get('document').trim(),phone:f.get('phone').trim(),email:f.get('email').trim(),notes:f.get('notes').trim()});saveAll();$('#investorDialog').close();toast('Investidor cadastrado.')};
+$('#newSourceButton').onclick=()=>{openDialog('capitalDialog','capitalForm');toggleInvestorField();updateInvestorSelects();updateCanPreview()};$('#sourceType').onchange=toggleInvestorField;$('#capitalForm').elements.amount.oninput=updateCanPreview;$('#capitalForm').elements.canPrice.oninput=updateCanPreview;
+$('#capitalForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget),sourceType=f.get('sourceType'),investorId=f.get('investorId'),movementType=f.get('movementType'),amount=Number(f.get('amount')),canPrice=Number(f.get('canPrice')||0);if(sourceType==='Investidor'&&!investorId)return toast('Selecione o investidor.');if(sourceType==='Investidor'&&canPrice<=0)return toast('Informe o valor da lata para o investidor.');const current=sourceCapital(sourceType,investorId);if(movementType==='Retirada'&&amount>current)return toast('Retirada maior que o saldo disponível.');capitalEntries.unshift({id:String(Date.now()),movementType,sourceType,investorId:sourceType==='Investidor'?investorId:'',date:f.get('date'),amount,canPrice,cans:canPrice>0?amount/canPrice:0,notes:f.get('notes').trim(),reversed:false});saveAll();$('#capitalDialog').close();toast('Movimentação registrada.')};
+window.reverseCapital=id=>{const e=capitalEntries.find(x=>x.id===id);if(confirm('Deseja estornar esta movimentação?')){e.reversed=true;e.reversedAt=today();saveAll();toast('Movimentação estornada e preservada no histórico.')}};
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(console.error));toggleInvestorField();togglePurchaseInvestor();render();
