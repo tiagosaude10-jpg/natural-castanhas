@@ -25,46 +25,22 @@
 
   <main class="app-shell">
     <section id="homeView" class="view active">
-      <div class="welcome-row">
-        <div>
-          <p class="eyebrow">Painel principal</p>
-          <h1>Olá, Operador!</h1>
-          <p class="muted">Bem-vindo à Natural Castanhas.</p>
-        </div>
-        <div class="avatar">OP</div>
-      </div>
-
+      <div class="welcome-row"><div><p class="eyebrow">Painel principal</p><h1>Olá, Operador!</h1><p class="muted">Bem-vindo à Natural Castanhas.</p></div><div class="avatar">OP</div></div>
       <section class="summary-card">
-        <div class="card-heading">
-          <div>
-            <p class="eyebrow light">Resumo geral</p>
-            <h2>Visão da operação</h2>
-          </div>
-          <span class="status-dot">Atualizado agora</span>
-        </div>
+        <div class="card-heading"><div><p class="eyebrow light">Resumo geral</p><h2>Visão da operação</h2></div><span class="status-dot">Atualizado agora</span></div>
         <div class="metrics-grid">
           <article><span>Dinheiro disponível</span><strong id="metricAvailable">R$ 0,00</strong></article>
           <article><span>Total comprado</span><strong id="metricPurchased">0 latas</strong></article>
           <article><span>Em estoque</span><strong id="metricStock">0 latas</strong></article>
           <article><span>Compras em aberto</span><strong id="metricOpen">0</strong></article>
-          <article><span>Pagamentos a realizar</span><strong id="metricPending">R$ 0,00</strong></article>
-          <article><span>Vendas realizadas</span><strong>R$ 0,00</strong></article>
+          <article><span>Capital cadastrado</span><strong id="metricCapital">R$ 0,00</strong></article>
+          <article><span>Investidores ativos</span><strong id="metricInvestors">0</strong></article>
         </div>
       </section>
-
-      <div class="section-title-row">
-        <div>
-          <p class="eyebrow">Acesso rápido</p>
-          <h2>Módulos principais</h2>
-        </div>
-      </div>
-
+      <div class="section-title-row"><div><p class="eyebrow">Acesso rápido</p><h2>Módulos principais</h2></div></div>
       <section class="module-grid">
-        <button class="module-card featured" data-open="purchasesView">
-          <span class="module-number">1</span><span class="module-icon">🛒</span>
-          <strong>Compras e controle da castanha</strong><small>Compras, recebimentos e pagamentos</small>
-        </button>
-        <button class="module-card locked"><span class="module-number">2</span><span class="module-icon">👥</span><strong>Capital e investidores</strong><small>Origem do dinheiro e conversão</small></button>
+        <button class="module-card featured" data-open="purchasesView"><span class="module-number">1</span><span class="module-icon">🛒</span><strong>Compras e controle da castanha</strong><small>Compras, recebimentos e pagamentos</small></button>
+        <button class="module-card featured" data-open="capitalView"><span class="module-number">2</span><span class="module-icon">👥</span><strong>Capital e investidores</strong><small>Origem do dinheiro e conversão</small></button>
         <button class="module-card locked"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e mercado</strong><small>Análise e inteligência comercial</small></button>
         <button class="module-card locked"><span class="module-icon">📦</span><strong>Estoque</strong><small>Lotes e armazenamento</small></button>
         <button class="module-card locked"><span class="module-icon">💰</span><strong>Vendas</strong><small>Clientes e comercialização</small></button>
@@ -73,74 +49,43 @@
         <button class="module-card locked"><span class="module-icon">📁</span><strong>Documentos</strong><small>Contratos e comprovantes</small></button>
         <button class="module-card locked"><span class="module-icon">⚙️</span><strong>Configurações</strong><small>Usuários e preferências</small></button>
       </section>
-
       <section class="fee-card"><span class="fee-icon">%</span><div><strong>Taxa da plataforma</strong><p>1% sobre as transações realizadas dentro do aplicativo.</p></div></section>
     </section>
 
     <section id="purchasesView" class="view">
-      <div class="module-header">
-        <button class="back-button" data-open="homeView" aria-label="Voltar">←</button>
-        <div><p class="eyebrow">Núcleo 1</p><h1>Compras de castanha</h1></div>
-      </div>
-
-      <section class="purchase-balance">
-        <div><span>Capital destinado às compras</span><strong id="purchaseCapital">R$ 250.000,00</strong></div>
-        <div class="balance-breakdown">
-          <article><span>Reservado</span><strong id="reservedValue">R$ 0,00</strong></article>
-          <article><span>Utilizado</span><strong id="usedValue">R$ 0,00</strong></article>
-          <article><span>Disponível</span><strong id="availableValue">R$ 250.000,00</strong></article>
-        </div>
-      </section>
-
+      <div class="module-header"><button class="back-button" data-open="homeView" aria-label="Voltar">←</button><div><p class="eyebrow">Núcleo 1</p><h1>Compras de castanha</h1></div></div>
+      <section class="purchase-balance"><div><span>Capital destinado às compras</span><strong id="purchaseCapital">R$ 0,00</strong></div><div class="balance-breakdown"><article><span>Reservado</span><strong id="reservedValue">R$ 0,00</strong></article><article><span>Utilizado</span><strong id="usedValue">R$ 0,00</strong></article><article><span>Disponível</span><strong id="availableValue">R$ 0,00</strong></article></div></section>
       <button class="primary-button" id="newPurchaseButton">＋ Nova compra</button>
+      <div class="filters"><input id="searchInput" type="search" placeholder="Pesquisar fornecedor ou compra" /><select id="statusFilter"><option value="all">Todos os status</option><option>Em negociação</option><option>Aguardando entrega</option><option>Recebida parcialmente</option><option>Preço em aberto</option><option>Aguardando pagamento</option><option>Finalizada</option><option>Cancelada</option></select></div>
+      <div class="list-heading"><h2>Compras cadastradas</h2><span id="purchaseCount">0 registros</span></div><div id="purchaseList" class="purchase-list"></div><div id="emptyState" class="empty-state"><span>🧺</span><h3>Nenhuma compra cadastrada</h3><p>Use o botão “Nova compra” para iniciar a primeira operação.</p></div>
+    </section>
 
-      <div class="filters">
-        <input id="searchInput" type="search" placeholder="Pesquisar fornecedor ou compra" />
-        <select id="statusFilter">
-          <option value="all">Todos os status</option>
-          <option value="Em negociação">Em negociação</option>
-          <option value="Aguardando entrega">Aguardando entrega</option>
-          <option value="Recebida parcialmente">Recebida parcialmente</option>
-          <option value="Preço em aberto">Preço em aberto</option>
-          <option value="Aguardando pagamento">Aguardando pagamento</option>
-          <option value="Finalizada">Finalizada</option>
-          <option value="Cancelada">Cancelada</option>
-        </select>
-      </div>
-
-      <div class="list-heading"><h2>Compras cadastradas</h2><span id="purchaseCount">0 registros</span></div>
-      <div id="purchaseList" class="purchase-list"></div>
-      <div id="emptyState" class="empty-state"><span>🧺</span><h3>Nenhuma compra cadastrada</h3><p>Use o botão “Nova compra” para iniciar a primeira operação.</p></div>
+    <section id="capitalView" class="view">
+      <div class="module-header"><button class="back-button" data-open="homeView" aria-label="Voltar">←</button><div><p class="eyebrow">Núcleo 2</p><h1>Capital e investidores</h1></div></div>
+      <section class="capital-summary">
+        <article><span>Capital total</span><strong id="capitalTotal">R$ 0,00</strong></article>
+        <article><span>Capital próprio</span><strong id="ownerCapital">R$ 0,00</strong></article>
+        <article><span>Capital de investidores</span><strong id="investorCapital">R$ 0,00</strong></article>
+        <article><span>Latas convertidas</span><strong id="convertedCans">0</strong></article>
+      </section>
+      <div class="dual-actions"><button class="primary-button" id="newSourceButton">＋ Registrar capital</button><button class="secondary-button wide" id="newInvestorButton">＋ Novo investidor</button></div>
+      <div class="list-heading"><h2>Investidores</h2><span id="investorCount">0 cadastrados</span></div>
+      <div id="investorList" class="investor-list"></div>
+      <div id="investorEmpty" class="empty-state"><span>👥</span><h3>Nenhum investidor cadastrado</h3><p>Cadastre o investidor e depois registre o aporte.</p></div>
+      <div class="list-heading"><h2>Movimentações de capital</h2><span id="capitalCount">0 registros</span></div>
+      <div id="capitalList" class="capital-list"></div>
+      <div id="capitalEmpty" class="empty-state"><span>💵</span><h3>Nenhum capital registrado</h3><p>Registre capital próprio ou aporte de investidor.</p></div>
     </section>
   </main>
 
-  <nav class="bottom-nav">
-    <button class="active" data-open="homeView"><span>⌂</span>Início</button>
-    <button class="locked"><span>🔔</span>Avisos</button>
-    <button class="add" id="quickAdd">＋</button>
-    <button class="locked"><span>▦</span>Atalhos</button>
-    <button class="locked"><span>👤</span>Perfil</button>
-  </nav>
-
+  <nav class="bottom-nav"><button class="active" data-open="homeView"><span>⌂</span>Início</button><button class="locked"><span>🔔</span>Avisos</button><button class="add" id="quickAdd">＋</button><button class="locked"><span>▦</span>Atalhos</button><button class="locked"><span>👤</span>Perfil</button></nav>
   <footer>© 2026 Axia Corp. Todos os direitos reservados.</footer>
 
-  <dialog id="purchaseDialog">
-    <form id="purchaseForm" method="dialog">
-      <div class="dialog-header"><div><p class="eyebrow">Nova operação</p><h2>Cadastrar compra</h2></div><button type="button" class="close-button" id="closeDialog">×</button></div>
-      <div class="form-grid">
-        <label>Fornecedor<input name="supplier" required placeholder="Ex.: João da Floresta" /></label>
-        <label>Data da compra<input name="date" type="date" required /></label>
-        <label>Quantidade de latas<input name="quantity" type="number" min="1" required placeholder="0" /></label>
-        <label>Modalidade<select name="priceType" required><option value="Preço fechado">Preço fechado</option><option value="Preço em aberto">Preço em aberto</option></select></label>
-        <label>Valor por lata (R$)<input name="unitPrice" type="number" min="0" step="0.01" placeholder="0,00" /></label>
-        <label>Valor pago (R$)<input name="paid" type="number" min="0" step="0.01" value="0" /></label>
-        <label>Status<select name="status" required><option>Em negociação</option><option>Aguardando entrega</option><option>Recebida parcialmente</option><option>Preço em aberto</option><option>Aguardando pagamento</option><option>Finalizada</option><option>Cancelada</option></select></label>
-        <label>Previsão de entrega<input name="delivery" type="date" /></label>
-        <label class="full">Observações<textarea name="notes" rows="3" placeholder="Informações adicionais"></textarea></label>
-      </div>
-      <div class="dialog-actions"><button type="button" class="secondary-button" id="cancelDialog">Cancelar</button><button class="primary-button" type="submit">Salvar compra</button></div>
-    </form>
-  </dialog>
+  <dialog id="purchaseDialog"><form id="purchaseForm" method="dialog"><div class="dialog-header"><div><p class="eyebrow">Nova operação</p><h2>Cadastrar compra</h2></div><button type="button" class="close-button" id="closeDialog">×</button></div><div class="form-grid"><label>Fornecedor<input name="supplier" required placeholder="Ex.: João da Floresta" /></label><label>Data da compra<input name="date" type="date" required /></label><label>Quantidade de latas<input name="quantity" type="number" min="1" required /></label><label>Modalidade<select name="priceType" required><option>Preço fechado</option><option>Preço em aberto</option></select></label><label>Valor por lata (R$)<input name="unitPrice" type="number" min="0" step="0.01" /></label><label>Valor pago (R$)<input name="paid" type="number" min="0" step="0.01" value="0" /></label><label>Status<select name="status" required><option>Em negociação</option><option>Aguardando entrega</option><option>Recebida parcialmente</option><option>Preço em aberto</option><option>Aguardando pagamento</option><option>Finalizada</option><option>Cancelada</option></select></label><label>Previsão de entrega<input name="delivery" type="date" /></label><label class="full">Observações<textarea name="notes" rows="3"></textarea></label></div><div class="dialog-actions"><button type="button" class="secondary-button" id="cancelDialog">Cancelar</button><button class="primary-button" type="submit">Salvar compra</button></div></form></dialog>
+
+  <dialog id="investorDialog"><form id="investorForm" method="dialog"><div class="dialog-header"><div><p class="eyebrow">Cadastro</p><h2>Novo investidor</h2></div><button type="button" class="close-button" id="closeInvestorDialog">×</button></div><div class="form-grid"><label>Nome completo<input name="name" required /></label><label>CPF ou CNPJ<input name="document" /></label><label>Telefone<input name="phone" type="tel" /></label><label>E-mail<input name="email" type="email" /></label><label class="full">Observações<textarea name="notes" rows="3"></textarea></label></div><div class="dialog-actions"><button type="button" class="secondary-button" id="cancelInvestorDialog">Cancelar</button><button class="primary-button" type="submit">Salvar investidor</button></div></form></dialog>
+
+  <dialog id="capitalDialog"><form id="capitalForm" method="dialog"><div class="dialog-header"><div><p class="eyebrow">Nova movimentação</p><h2>Registrar capital</h2></div><button type="button" class="close-button" id="closeCapitalDialog">×</button></div><div class="form-grid"><label>Origem<select name="sourceType" id="sourceType" required><option value="Proprietário">Proprietário</option><option value="Investidor">Investidor</option></select></label><label id="investorField">Investidor<select name="investorId" id="investorSelect"><option value="">Selecione</option></select></label><label>Data do aporte<input name="date" type="date" required /></label><label>Valor recebido (R$)<input name="amount" type="number" min="0.01" step="0.01" required /></label><label>Valor da lata (R$)<input name="canPrice" type="number" min="0.01" step="0.01" /></label><label>Latas equivalentes<input id="canPreview" type="text" value="0" readonly /></label><label class="full">Observações<textarea name="notes" rows="3"></textarea></label></div><div class="dialog-actions"><button type="button" class="secondary-button" id="cancelCapitalDialog">Cancelar</button><button class="primary-button" type="submit">Salvar capital</button></div></form></dialog>
 
   <script src="app.js"></script>
 </body>
