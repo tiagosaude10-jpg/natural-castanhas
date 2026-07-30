@@ -7,9 +7,11 @@
     const feeCard=document.querySelector('.fee-card');
     if(feeCard){
       const feeIcon=feeCard.querySelector('.fee-icon');
+      const feeTitle=feeCard.querySelector('strong');
       const feeText=feeCard.querySelector('p');
-      if(feeIcon)feeIcon.textContent='0,5%';
-      if(feeText)feeText.textContent='0,5% sobre as operações efetivadas dentro do aplicativo.';
+      if(feeIcon)feeIcon.textContent='👥';
+      if(feeTitle)feeTitle.textContent='A importância do uso do aplicativo';
+      if(feeText)feeText.textContent='Utilizar o aplicativo garante mais controle, agilidade e segurança em todas as operações, permitindo decisões mais assertivas e melhores resultados para o seu negócio.';
     }
 
     let button=document.querySelector('[data-open="platformAdminView"]');
