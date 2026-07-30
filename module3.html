@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#24552a">
+<title>Fornecedores e Inteligência de Compra</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="module3.css">
+</head>
+<body>
+<div id="supplierToast" class="toast" aria-live="polite"></div>
+<header class="topbar"><button class="icon-button" onclick="location.href='./'">←</button><div class="brand-mini"><img src="7F68BA35-AEDF-4E80-9922-C8D2084BC8FA.png" alt="Natural Castanhas"></div><button class="icon-button">📈</button></header>
+<main class="app-shell supplier-shell">
+<section class="module-header supplier-title"><button class="back-button" onclick="location.href='./'">←</button><div><p class="eyebrow">Módulo 3</p><h1>Fornecedores e inteligência de compra</h1><p class="muted">Cadastre, compare e acompanhe oportunidades.</p></div></section>
+<section class="supplier-summary">
+<article><span>Fornecedores ativos</span><strong id="supplierMetricActive">0</strong></article>
+<article><span>Com produto disponível</span><strong id="supplierMetricAvailable">0</strong></article>
+<article><span>Volume disponível</span><strong id="supplierMetricVolume">0 latas</strong></article>
+<article><span>Preço médio atual</span><strong id="supplierMetricPrice">R$ 0,00</strong></article>
+<article><span>Negociações abertas</span><strong id="supplierMetricDeals">0</strong></article>
+<article><span>Oportunidades</span><strong id="supplierMetricOpportunities">0</strong></article>
+</section>
+<div class="supplier-actions"><button class="primary-button" id="newSupplierButton">＋ Cadastrar fornecedor</button><button class="secondary-button wide" id="newAvailabilityButton">＋ Registrar disponibilidade</button></div>
+<section class="supplier-tools">
+<button data-tab="suppliers" class="active">Fornecedores</button>
+<button data-tab="opportunities">Oportunidades</button>
+<button data-tab="compare">Comparar</button>
+</section>
+<section id="suppliersPanel" class="supplier-panel active">
+<div class="filters supplier-filters"><input id="supplierSearch" type="search" placeholder="Pesquisar nome, município ou telefone"><select id="supplierStatusFilter"><option value="all">Todos</option><option value="Recomendado">Recomendados</option><option value="Em observação">Em observação</option><option value="Com restrição">Com restrição</option><option value="available">Com produto disponível</option></select></div>
+<div class="list-heading"><h2>Fornecedores cadastrados</h2><span id="supplierCount">0 registros</span></div>
+<div id="supplierList" class="supplier-list"></div>
+<div id="supplierEmpty" class="empty-state"><span>🌰</span><h3>Nenhum fornecedor cadastrado</h3><p>Cadastre o primeiro fornecedor para iniciar a inteligência de compra.</p></div>
+</section>
+<section id="opportunitiesPanel" class="supplier-panel">
+<div class="list-heading"><h2>Oportunidades identificadas</h2><span>Preço e disponibilidade</span></div>
+<div id="opportunityList" class="supplier-list"></div>
+<div id="opportunityEmpty" class="empty-state"><span>💡</span><h3>Nenhuma oportunidade no momento</h3><p>Registre preços e volumes para o sistema comparar as ofertas.</p></div>
+</section>
+<section id="comparePanel" class="supplier-panel">
+<div class="compare-intro"><h2>Comparativo de fornecedores</h2><p>Selecione até três fornecedores para comparar preço, volume, qualidade, distância e confiabilidade.</p></div>
+<div id="compareSelector" class="compare-selector"></div>
+<div id="compareResult" class="compare-result"></div>
+</section>
+</main>
+<dialog id="supplierDialog"><form id="supplierForm" method="dialog"><input name="supplierId" type="hidden"><div class="dialog-header"><div><p class="eyebrow">Cadastro</p><h2 id="supplierDialogTitle">Novo fornecedor</h2></div><button type="button" class="close-button" data-close="supplierDialog">×</button></div><div class="form-grid"><label>Nome ou razão social<input name="name" required></label><label>Tipo<select name="type"><option>Produtor</option><option>Extrativista</option><option>Cooperativa</option><option>Associação</option><option>Intermediário</option><option>Empresa</option><option>Outro</option></select></label><label>CPF ou CNPJ<input name="document"></label><label>WhatsApp<input name="phone" type="tel"></label><label>Propriedade ou comunidade<input name="property"></label><label>Município<input name="city" required></label><label>Estado<input name="state" value="RO" maxlength="2"></label><label>Distância estimada (km)<input name="distance" type="number" min="0" step="0.1"></label><label>Forma de pagamento preferida<select name="payment"><option>PIX</option><option>Transferência</option><option>Dinheiro</option><option>Pagamento parcial</option><option>Pagamento após entrega</option><option>Outra</option></select></label><label>Status comercial<select name="status"><option>Recomendado</option><option>Em observação</option><option>Com restrição</option></select></label><label>Qualidade média (0 a 10)<input name="quality" type="number" min="0" max="10" step="0.1" value="8"></label><label>Confiabilidade (%)<input name="reliability" type="number" min="0" max="100" step="1" value="80"></label><label class="full">Observações<textarea name="notes" rows="3"></textarea></label></div><div class="dialog-actions"><button type="button" class="secondary-button" data-close="supplierDialog">Cancelar</button><button class="primary-button" type="submit">Salvar fornecedor</button></div></form></dialog>
+<dialog id="availabilityDialog"><form id="availabilityForm" method="dialog"><div class="dialog-header"><div><p class="eyebrow">Oferta</p><h2>Registrar disponibilidade</h2></div><button type="button" class="close-button" data-close="availabilityDialog">×</button></div><div class="form-grid"><label>Fornecedor<select name="supplierId" id="availabilitySupplier" required></select></label><label>Data da informação<input name="date" type="date" required></label><label>Quantidade disponível (latas)<input name="quantity" type="number" min="0.01" step="0.01" required></label><label>Preço desejado por lata (R$)<input name="price" type="number" min="0.01" step="0.01" required></label><label>Validade da oferta<input name="validUntil" type="date"></label><label>Prazo de entrega (dias)<input name="deliveryDays" type="number" min="0" step="1"></label><label>Condição do produto<select name="condition"><option>Excelente</option><option>Boa</option><option>Regular</option><option>Necessita avaliação</option></select></label><label>Negociação<select name="negotiable"><option value="Sim">Preço negociável</option><option value="Não">Preço fechado</option></select></label><label class="full">Observações<textarea name="notes" rows="3"></textarea></label></div><div class="dialog-actions"><button type="button" class="secondary-button" data-close="availabilityDialog">Cancelar</button><button class="primary-button" type="submit">Salvar disponibilidade</button></div></form></dialog>
+<script src="module3.js"></script>
+</body></html>
