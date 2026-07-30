@@ -6,13 +6,28 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#24552a",
-  "description": "Gestão de compras e operações do mercado de castanhas.",
+  "description": "Gestão integrada das operações do mercado de castanhas.",
   "icons": [
     {
       "src": "141FEC0C-C074-45A3-84B5-4538207A5C5E.png",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Documentos e Conformidade",
+      "short_name": "Documentos",
+      "description": "Abrir o Núcleo 10 de documentos, contratos e conformidade.",
+      "url": "./nucleo-10-documentos.html",
+      "icons": [
+        {
+          "src": "141FEC0C-C074-45A3-84B5-4538207A5C5E.png",
+          "sizes": "1254x1254",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
