@@ -1,24 +1,9 @@
-const CACHE='natural-castanhas-v7';
-const FILES=['./styles.css','./app.js','./nucleo3-integrado.js','./nucleo3-melhorias.js','./nucleo4-estoque.js','./manifest.webmanifest'];
+const CACHE='natural-castanhas-v8';
+const FILES=['./styles.css','./app.js','./sales.js','./nucleo3-integrado.js','./nucleo3-melhorias.js','./nucleo4-estoque.js','./manifest.webmanifest'];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)))});
 self.addEventListener('activate',event=>{event.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))))]))});
 self.addEventListener('fetch',event=>{
- const url=new URL(event.request.url);
- const isHome=event.request.mode==='navigate'&&(url.pathname.endsWith('/')||url.pathname.endsWith('/index.html'));
- if(isHome){
-  event.respondWith((async()=>{
-   let response;
-   try{response=await fetch(event.request,{cache:'no-store'})}catch(error){response=await caches.match('./index.html')}
-   let html=await response.text();
-   const scripts=`<script src="./nucleo3-integrado.js?v=7"></script><script src="./nucleo3-melhorias.js?v=7"></script><script src="./nucleo4-estoque.js?v=7"></script>`;
-   if(!html.includes('nucleo3-integrado.js'))html=html.replace('</body>',scripts+'</body>');
-   else{
-    if(!html.includes('nucleo3-melhorias.js'))html=html.replace('</body>','<script src="./nucleo3-melhorias.js?v=7"></script></body>');
-    if(!html.includes('nucleo4-estoque.js'))html=html.replace('</body>','<script src="./nucleo4-estoque.js?v=7"></script></body>');
-   }
-   return new Response(html,{status:200,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store, no-cache, must-revalidate'}})
-  })());
-  return;
- }
+ const url=new URL(event.request.url),isHome=event.request.mode==='navigate'&&(url.pathname.endsWith('/')||url.pathname.endsWith('/index.html'));
+ if(isHome){event.respondWith((async()=>{let response;try{response=await fetch(event.request,{cache:'no-store'})}catch(error){response=await caches.match('./index.html')}let html=await response.text();const scripts=`<script src="./nucleo3-integrado.js?v=8"></script><script src="./nucleo3-melhorias.js?v=8"></script><script src="./nucleo4-estoque.js?v=8"></script>`;if(!html.includes('nucleo3-integrado.js'))html=html.replace('</body>',scripts+'</body>');else{if(!html.includes('nucleo3-melhorias.js'))html=html.replace('</body>','<script src="./nucleo3-melhorias.js?v=8"></script></body>');if(!html.includes('nucleo4-estoque.js'))html=html.replace('</body>','<script src="./nucleo4-estoque.js?v=8"></script></body>')}return new Response(html,{status:200,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store, no-cache, must-revalidate'}})})());return}
  event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request)));
 });
