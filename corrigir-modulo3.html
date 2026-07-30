@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#24552a">
+<title>Corrigindo Natural Castanhas</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif;background:#f3f7f2;color:#1e241f;text-align:center}.box{max-width:420px;background:#fff;border-radius:24px;padding:30px 22px;box-shadow:0 15px 45px rgba(35,72,41,.15)}h1{font-size:24px;margin:0 0 12px;color:#24552a}p{line-height:1.5;color:#667067}.loader{width:46px;height:46px;border:5px solid #dfe8df;border-top-color:#24552a;border-radius:50%;margin:0 auto 20px;animation:girar .8s linear infinite}.ok{font-size:48px;margin-bottom:12px}@keyframes girar{to{transform:rotate(360deg)}}button{border:0;border-radius:14px;background:#24552a;color:#fff;padding:15px 20px;font-size:16px;font-weight:800;width:100%;display:none}
+</style>
+</head>
+<body>
+<div class="box"><div id="icon" class="loader"></div><h1 id="title">Corrigindo o Módulo 3</h1><p id="message">Aguarde alguns segundos. Estamos removendo a versão antiga armazenada no aparelho.</p><button id="openButton">Abrir Natural Castanhas</button></div>
+<script>
+(async function(){
+ const old='<button class="module-card locked"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e mercado</strong><small>Análise e inteligência comercial</small></button>';
+ const updated='<button class="module-card featured" id="module3Button" onclick="location.href=\'./module3.html\'"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e inteligência de compra</strong><small>Cadastro, comparação e oportunidades</small></button>';
+ try{
+   const response=await fetch('./index.html?correcao='+Date.now(),{cache:'no-store'});
+   let html=await response.text();
+   html=html.replace(old,updated);
+   html=html.replace('<script src="app.js"></script>','<script src="app.js"></script><script>document.addEventListener("click",function(e){var b=e.target.closest("#module3Button");if(b){e.preventDefault();e.stopImmediatePropagation();location.href="./module3.html"}},true);<\/script>');
+   const keys=await caches.keys();
+   if(!keys.length)keys.push('natural-castanhas-recovery');
+   for(const key of keys){const cache=await caches.open(key);const fixed=new Response(html,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});await cache.put('./index.html',fixed.clone());await cache.put('./',fixed.clone());}
+   if('serviceWorker' in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update().catch(()=>{});}
+   document.getElementById('icon').className='ok';document.getElementById('icon').textContent='✓';
+   document.getElementById('title').textContent='Correção concluída';
+   document.getElementById('message').textContent='A tela inicial foi atualizada. Toque abaixo para abrir o aplicativo.';
+   const button=document.getElementById('openButton');button.style.display='block';button.onclick=()=>location.href='./index.html?atualizado='+Date.now();
+ }catch(error){document.getElementById('icon').className='ok';document.getElementById('icon').textContent='!';document.getElementById('title').textContent='Não foi possível concluir';document.getElementById('message').textContent='Verifique a internet e atualize esta página para tentar novamente.';}
+})();
+</script>
+</body>
+</html>
