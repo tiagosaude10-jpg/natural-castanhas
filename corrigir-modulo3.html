@@ -10,25 +10,28 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;box-
 </style>
 </head>
 <body>
-<div class="box"><div id="icon" class="loader"></div><h1 id="title">Corrigindo o Módulo 3</h1><p id="message">Aguarde alguns segundos. Estamos removendo a versão antiga armazenada no aparelho.</p><button id="openButton">Abrir Natural Castanhas</button></div>
+<div class="box"><div id="icon" class="loader"></div><h1 id="title">Corrigindo o Núcleo 3</h1><p id="message">Aguarde alguns segundos. Estamos removendo a versão antiga armazenada no aparelho.</p><button id="openButton">Abrir Natural Castanhas</button></div>
 <script>
 (async function(){
- const old='<button class="module-card locked"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e mercado</strong><small>Análise e inteligência comercial</small></button>';
- const updated='<button class="module-card featured" id="module3Button" onclick="location.href=\'./module3.html\'"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores e inteligência de compra</strong><small>Cadastro, comparação e oportunidades</small></button>';
+ const icon=document.getElementById('icon'),title=document.getElementById('title'),message=document.getElementById('message'),button=document.getElementById('openButton');
+ const finish=function(){icon.className='ok';icon.textContent='✓';title.textContent='Correção concluída';message.textContent='O acesso ao Núcleo 3 foi atualizado. O aplicativo será aberto agora.';button.style.display='block';button.onclick=function(){location.replace('./index.html?versao=4&t='+Date.now())};setTimeout(button.onclick,1200)};
  try{
-   const response=await fetch('./index.html?correcao='+Date.now(),{cache:'no-store'});
-   let html=await response.text();
-   html=html.replace(old,updated);
-   html=html.replace('<script src="app.js"></script>','<script src="app.js"></script><script>document.addEventListener("click",function(e){var b=e.target.closest("#module3Button");if(b){e.preventDefault();e.stopImmediatePropagation();location.href="./module3.html"}},true);<\/script>');
-   const keys=await caches.keys();
-   if(!keys.length)keys.push('natural-castanhas-recovery');
-   for(const key of keys){const cache=await caches.open(key);const fixed=new Response(html,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}});await cache.put('./index.html',fixed.clone());await cache.put('./',fixed.clone());}
-   if('serviceWorker' in navigator){const reg=await navigator.serviceWorker.getRegistration();if(reg)await reg.update().catch(()=>{});}
-   document.getElementById('icon').className='ok';document.getElementById('icon').textContent='✓';
-   document.getElementById('title').textContent='Correção concluída';
-   document.getElementById('message').textContent='A tela inicial foi atualizada. Toque abaixo para abrir o aplicativo.';
-   const button=document.getElementById('openButton');button.style.display='block';button.onclick=()=>location.href='./index.html?atualizado='+Date.now();
- }catch(error){document.getElementById('icon').className='ok';document.getElementById('icon').textContent='!';document.getElementById('title').textContent='Não foi possível concluir';document.getElementById('message').textContent='Verifique a internet e atualize esta página para tentar novamente.';}
+   if('serviceWorker' in navigator){
+     const regs=await navigator.serviceWorker.getRegistrations();
+     await Promise.all(regs.map(function(reg){return reg.unregister()}));
+   }
+   if('caches' in window){
+     const keys=await caches.keys();
+     await Promise.all(keys.map(function(key){return caches.delete(key)}));
+   }
+   if('serviceWorker' in navigator){
+     await navigator.serviceWorker.register('./service-worker.js?v=4',{scope:'./'});
+     await navigator.serviceWorker.ready;
+   }
+   finish();
+ }catch(error){
+   icon.className='ok';icon.textContent='!';title.textContent='Não foi possível concluir';message.textContent='Toque no botão abaixo para abrir o Núcleo 3 diretamente.';button.style.display='block';button.textContent='Abrir Núcleo 3';button.onclick=function(){location.href='./module3.html?t='+Date.now()};
+ }
 })();
 </script>
 </body>
