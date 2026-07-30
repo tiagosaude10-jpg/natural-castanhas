@@ -22,3 +22,25 @@ q('#saleActionForm').addEventListener('submit',e=>{e.preventDefault();const f=ne
 q('#saleSearch').oninput=renderSales;q('#saleStatusFilter').onchange=renderSales;['receiptForm','cancelPurchaseForm','closePriceForm'].forEach(fid=>q('#'+fid)?.addEventListener('submit',()=>setTimeout(renderSales,0)));document.querySelector('[data-open="salesView"]').addEventListener('click',renderSales);renderSales();
 })();
 (()=>{const s=document.createElement('script');s.src='financeiro.js?v=1';s.defer=true;document.body.appendChild(s)})();
+
+// Núcleo 12 — Administração da Plataforma e Taxas (inativo)
+(()=>{
+  const grid=document.querySelector('.module-grid');
+  const main=document.querySelector('main.app-shell');
+  if(!grid||!main||document.querySelector('[data-open="platformAdminView"]'))return;
+
+  const button=document.createElement('button');
+  button.className='module-card featured';
+  button.dataset.open='platformAdminView';
+  button.innerHTML='<span class="module-number">12</span><span class="module-icon">⚙️</span><strong>Administração</strong><small>Plataforma e taxas</small>';
+  grid.appendChild(button);
+
+  const view=document.createElement('section');
+  view.id='platformAdminView';
+  view.className='view';
+  view.innerHTML='<div class="module-header"><button class="back-button" data-open="homeView">←</button><div><p class="eyebrow">Núcleo 12</p><h1>Administração da Plataforma e Taxas</h1></div></div><section class="summary-card"><div class="card-heading"><div><p class="eyebrow light">Status do módulo</p><h2>Inativo por enquanto</h2></div><span class="status-dot">Em breve</span></div><p style="margin:18px 0 0;line-height:1.6">Este núcleo já está preparado para a futura administração comercial da plataforma Natural Castanhas.</p><div class="metrics-grid" style="margin-top:18px"><article><span>Taxa futura</span><strong>0,5%</strong></article><article><span>Cobrança atual</span><strong>Desativada</strong></article><article><span>Operações consideradas</span><strong>Somente efetivadas</strong></article><article><span>Impacto atual</span><strong>Nenhum</strong></article></div><p class="muted" style="margin-top:18px">Nenhuma compra, venda ou resultado atual está gerando cobrança da plataforma.</p></section>';
+  main.appendChild(view);
+
+  button.addEventListener('click',()=>openView('platformAdminView'));
+  view.querySelector('[data-open="homeView"]').addEventListener('click',()=>openView('homeView'));
+})();
