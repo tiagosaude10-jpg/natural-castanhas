@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 150" role="img" aria-label="Natural Castanhas">
+<rect width="560" height="150" fill="none"/>
+<g transform="translate(18,16)"><ellipse cx="55" cy="42" rx="24" ry="42" fill="#8b4b1e" transform="rotate(25 55 42)"/><ellipse cx="78" cy="46" rx="19" ry="38" fill="#d6a56f" transform="rotate(25 78 46)"/><path d="M23 59C5 42 8 20 35 28c16 5 20 18 20 18S39 70 23 59Z" fill="#2d6b35"/><path d="M100 59c18-17 15-39-12-31-16 5-20 18-20 18s16 24 32 13Z" fill="#4d8a45"/></g>
+<text x="130" y="72" font-family="Arial, sans-serif" font-size="54" font-weight="800" letter-spacing="4" fill="#24552a">NATURAL</text>
+<text x="132" y="118" font-family="Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="8" fill="#4c2b1b">CASTANHAS</text>
+</svg>
