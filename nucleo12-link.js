@@ -4,6 +4,14 @@
     const main=document.querySelector('main.app-shell');
     if(!grid||!main)return;
 
+    const feeCard=document.querySelector('.fee-card');
+    if(feeCard){
+      const feeIcon=feeCard.querySelector('.fee-icon');
+      const feeText=feeCard.querySelector('p');
+      if(feeIcon)feeIcon.textContent='0,5%';
+      if(feeText)feeText.textContent='0,5% sobre as operações efetivadas dentro do aplicativo.';
+    }
+
     let button=document.querySelector('[data-open="platformAdminView"]');
     if(!button){
       button=document.createElement('button');
