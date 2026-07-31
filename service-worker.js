@@ -1,21 +1,19 @@
-const CACHE='natural-castanhas-v36';
+const CACHE='natural-castanhas-v37';
 const CORE_FILES=[
   './index.html','./styles.css','./ios-form-fix.css','./app.js','./sales.js','./financeiro.js',
   './resultados.js','./relatorios.js','./ios-form-fix.js','./nucleo3-integrado.js',
   './nucleo3-melhorias.js','./nucleo4-estoque.js','./nucleo8-link.js','./nucleo10-link.js',
   './nucleo11-usuarios.js','./barra-inferior.js','./data-safety.js','./flow-health.js',
-  './nucleo0.js','./admin-bootstrap.js','./auth-gate.js','./admin-center.js',
-  './admin-inicial-tiago.js','./password-recovery.js','./cadastro-pessoa.js',
-  './auth-login-hotfix.js','./dashboard-consolidado.js','./nucleo-8-transporte.html',
-  './nucleo-10-documentos.html','./manifest.webmanifest'
+  './nucleo0.js','./auth-gate.js','./admin-bootstrap.js','./admin-center.js',
+  './password-recovery.js','./cadastro-pessoa.js','./dashboard-consolidado.js',
+  './nucleo-8-transporte.html','./nucleo-10-documentos.html','./manifest.webmanifest'
 ];
 
 const PAGE_SCRIPTS=[
   'nucleo3-integrado.js','nucleo3-melhorias.js','nucleo4-estoque.js','ios-form-fix.js',
   'nucleo8-link.js','nucleo10-link.js','nucleo11-usuarios.js','barra-inferior.js',
-  'data-safety.js','flow-health.js','nucleo0.js','admin-bootstrap.js','auth-gate.js',
-  'admin-center.js','admin-inicial-tiago.js','password-recovery.js','cadastro-pessoa.js',
-  'auth-login-hotfix.js','dashboard-consolidado.js'
+  'data-safety.js','flow-health.js','nucleo0.js','auth-gate.js','admin-bootstrap.js',
+  'admin-center.js','password-recovery.js','cadastro-pessoa.js','dashboard-consolidado.js'
 ];
 
 self.addEventListener('install',event=>{
@@ -44,10 +42,10 @@ async function homeResponse(request){
 
   let html=await response.text();
   if(!html.includes('ios-form-fix.css')){
-    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=36"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=37"></head>');
   }
   PAGE_SCRIPTS.forEach(name=>{
-    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=36"></script></body>`);
+    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=37"></script></body>`);
   });
   return new Response(html,{
     status:response.status,
