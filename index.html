@@ -1,1 +1,277 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#24552a"><title>Natural Castanhas</title><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="141FEC0C-C074-45A3-84B5-4538207A5C5E.png"><link rel="apple-touch-icon" href="141FEC0C-C074-45A3-84B5-4538207A5C5E.png"><link rel="stylesheet" href="styles.css"></head><body><div id="toast" class="toast"></div><header class="topbar"><button class="icon-button">☰</button><div class="brand-mini"><img src="7F68BA35-AEDF-4E80-9922-C8D2084BC8FA.png"></div><button class="icon-button notification">🔔<span>3</span></button></header><main class="app-shell"><section id="homeView" class="view active"><div class="welcome-row"><div><p class="eyebrow">Painel principal</p><h1>Olá, Hélio!</h1><p class="muted">Bem-vindo à Natural Castanhas.</p></div><div class="avatar">HE</div></div><section class="summary-card"><div class="card-heading"><div><p class="eyebrow light">Resumo geral</p><h2>Visão da operação</h2></div><span class="status-dot">Atualizado agora</span></div><div class="metrics-grid"><article><span>Dinheiro disponível</span><strong id="metricAvailable">R$ 0,00</strong></article><article><span>Total negociado</span><strong id="metricPurchased">0 latas</strong></article><article><span>Em estoque</span><strong id="metricStock">0 latas</strong></article><article><span>Compras em aberto</span><strong id="metricOpen">0</strong></article><article><span>Capital cadastrado</span><strong id="metricCapital">R$ 0,00</strong></article><article><span>Vendas confirmadas</span><strong id="metricSales">R$ 0,00</strong></article></div><span id="metricInvestors" hidden></span></section><div class="section-title-row"><div><p class="eyebrow">Acesso rápido</p><h2>Módulos principais</h2></div></div><section class="module-grid"><button class="module-card featured" data-open="purchasesView"><span class="module-number">1</span><span class="module-icon">🛒</span><strong>Compras</strong><small>Negociação e recebimento</small></button><button class="module-card featured" data-open="capitalView"><span class="module-number">2</span><span class="module-icon">👥</span><strong>Capital</strong><small>Investidores e extrato</small></button><button class="module-card locked"><span class="module-number">3</span><span class="module-icon">📈</span><strong>Fornecedores</strong><small>Mercado e inteligência</small></button><button class="module-card locked"><span class="module-number">4</span><span class="module-icon">📦</span><strong>Estoque</strong><small>Lotes e rastreabilidade</small></button><button class="module-card featured" data-open="salesView"><span class="module-number">5</span><span class="module-icon">💰</span><strong>Vendas e clientes</strong><small>Pedidos, reservas e margem</small></button><button class="module-card locked"><span class="module-number">6</span><span class="module-icon">👛</span><strong>Financeiro</strong><small>Contas e resultados</small></button></section><section class="fee-card"><span class="fee-icon">%</span><div><strong>Taxa da plataforma — inativa</strong><p>0,5% somente sobre operações efetivadas, quando a cobrança for ativada futuramente.</p></div></section></section><section id="purchasesView" class="view"><div class="module-header"><button class="back-button" data-open="homeView">←</button><div><p class="eyebrow">Núcleo 1</p><h1>Compras de castanha</h1></div></div><section class="purchase-balance"><div><span>Capital líquido disponível</span><strong id="purchaseCapital">R$ 0,00</strong></div><div class="balance-breakdown"><article><span>Comprometido</span><strong id="reservedValue"></strong></article><article><span>Pago</span><strong id="usedValue"></strong></article><article><span>Disponível</span><strong id="availableValue"></strong></article></div></section><button class="primary-button" id="newPurchaseButton">＋ Nova compra</button><div class="filters"><input id="searchInput" placeholder="Pesquisar"><select id="statusFilter"><option value="all">Todos os status</option><option>Em negociação</option><option>Aguardando entrega</option><option>Recebida parcialmente</option><option>Preço em aberto</option><option>Aguardando pagamento</option><option>Finalizada</option><option>Cancelada</option></select></div><div class="list-heading"><h2>Compras cadastradas</h2><span id="purchaseCount"></span></div><div id="purchaseList" class="purchase-list"></div><div id="emptyState" class="empty-state"><span>🧺</span><h3>Nenhuma compra cadastrada</h3></div></section><section id="capitalView" class="view"><div class="module-header"><button class="back-button" data-open="homeView">←</button><div><p class="eyebrow">Núcleo 2</p><h1>Capital e investidores</h1></div></div><section class="capital-summary"><article><span>Capital líquido</span><strong id="capitalTotal"></strong></article><article><span>Capital próprio</span><strong id="ownerCapital"></strong></article><article><span>Capital de investidores</span><strong id="investorCapital"></strong></article><article><span>Total convertido</span><strong id="convertedCans"></strong></article></section><div class="dual-actions"><button class="primary-button" id="newSourceButton">＋ Movimentação</button><button class="secondary-button wide" id="newInvestorButton">＋ Investidor</button></div><div class="list-heading"><h2>Investidores</h2><span id="investorCount"></span></div><div id="investorList" class="investor-list"></div><div id="investorEmpty" class="empty-state">Nenhum investidor</div><div class="list-heading"><h2>Movimentações</h2><span id="capitalCount"></span></div><div id="capitalList" class="capital-list"></div><div id="capitalEmpty" class="empty-state">Nenhuma movimentação</div></section><section id="salesView" class="view"><div class="module-header"><button class="back-button" data-open="homeView">←</button><div><p class="eyebrow">Núcleo 5</p><h1>Vendas e clientes</h1></div></div><section class="capital-summary"><article><span>Estoque físico</span><strong id="salesPhysical"></strong></article><article><span>Reservado</span><strong id="salesReserved"></strong></article><article><span>Disponível</span><strong id="salesAvailable"></strong></article><article><span>Receita confirmada</span><strong id="salesRevenue"></strong></article></section><div class="dual-actions"><button class="primary-button" id="newSaleButton">＋ Novo pedido</button><button class="secondary-button wide" id="newClientButton">＋ Novo cliente</button></div><div class="filters"><input id="saleSearch" placeholder="Pesquisar cliente ou pedido"><select id="saleStatusFilter"><option value="all">Todos os status</option><option>Em negociação</option><option>Confirmada</option><option>Separação</option><option>Em transporte</option><option>Entregue parcialmente</option><option>Entregue</option><option>Cancelada</option></select></div><div class="list-heading"><h2>Pedidos e vendas</h2><span id="saleCount"></span></div><div id="saleList" class="purchase-list"></div><div id="saleEmpty" class="empty-state">Nenhum pedido cadastrado</div><div class="list-heading"><h2>Clientes compradores</h2><span id="clientCount"></span></div><div id="clientList" class="investor-list"></div><div id="clientEmpty" class="empty-state">Nenhum cliente cadastrado</div></section></main><nav class="bottom-nav"><button class="active" data-open="homeView"><span>⌂</span>Início</button><button class="locked"><span>🔔</span>Avisos</button><button class="add" id="quickAdd">＋</button><button class="locked"><span>▦</span>Atalhos</button><button class="locked"><span>👤</span>Perfil</button></nav><footer>© 2026 Axia Corp.</footer><dialog id="purchaseDialog"><form id="purchaseForm"><div class="dialog-header"><h2>Cadastrar compra</h2><button type="button" class="close-button" data-close="purchaseDialog">×</button></div><div class="form-grid"><label>Fornecedor<input name="supplier" required></label><label>Data<input name="date" type="date" required></label><label>Quantidade<input name="quantity" type="number" min="1" required></label><label>Modalidade<select name="priceType"><option>Preço fechado</option><option>Preço em aberto</option></select></label><label>Valor por lata<input name="unitPrice" type="number" step=".01"></label><label>Origem<select name="sourceType" id="purchaseSourceType"><option>Proprietário</option><option>Investidor</option></select></label><label id="purchaseInvestorField">Investidor<select name="investorId" id="purchaseInvestorSelect"></select></label><label>Previsão<input name="delivery" type="date"></label><label class="full">Observações<textarea name="notes"></textarea></label></div><div class="dialog-actions"><button class="primary-button">Salvar</button></div></form></dialog><dialog id="receiptDialog"><form id="receiptForm"><input name="purchaseId" type="hidden"><div class="dialog-header"><h2>Registrar entrada</h2><button type="button" data-close="receiptDialog">×</button></div><div class="form-grid"><label>Data<input name="date" type="date" required></label><label>Recebida<input name="received" type="number" step=".01" required></label><label>Aprovada<input name="approved" type="number" step=".01" required></label><label>Recusada<input name="rejected" type="number" step=".01" value="0"></label><label>Umidade<input name="moisture" type="number" step=".01"></label><label>Impurezas<input name="impurities" type="number" step=".01"></label><label class="full">Observações<textarea name="notes"></textarea></label></div><button class="primary-button">Salvar</button></form></dialog><dialog id="paymentDialog"><form id="paymentForm"><input name="purchaseId" type="hidden"><h2>Registrar pagamento</h2><div class="form-grid"><label>Data<input name="date" type="date" required></label><label>Valor<input name="amount" type="number" step=".01" required></label><label>Forma<select name="method"><option>PIX</option><option>Transferência</option><option>Dinheiro</option><option>Boleto</option></select></label><label class="full">Observações<textarea name="notes"></textarea></label></div><button class="primary-button">Salvar</button></form></dialog><dialog id="closePriceDialog"><form id="closePriceForm"><input name="purchaseId" type="hidden"><h2>Fechar preço</h2><label>Data<input name="date" type="date" required></label><label>Valor por lata<input name="unitPrice" type="number" step=".01" required></label><label>Observações<textarea name="notes"></textarea></label><button class="primary-button">Salvar</button></form></dialog><dialog id="cancelPurchaseDialog"><form id="cancelPurchaseForm"><input name="purchaseId" type="hidden"><h2>Cancelar compra</h2><label>Motivo<textarea name="reason" required></textarea></label><button class="danger-button">Confirmar</button></form></dialog><dialog id="investorDialog"><form id="investorForm"><h2>Novo investidor</h2><div class="form-grid"><label>Nome<input name="name" required></label><label>Documento<input name="document"></label><label>Telefone<input name="phone"></label><label>E-mail<input name="email"></label><label class="full">Observações<textarea name="notes"></textarea></label></div><button class="primary-button">Salvar</button></form></dialog><dialog id="capitalDialog"><form id="capitalForm"><h2>Registrar capital</h2><div class="form-grid"><label>Tipo<select name="movementType"><option>Entrada</option><option>Retirada</option><option>Ajuste</option></select></label><label>Origem<select name="sourceType" id="sourceType"><option>Proprietário</option><option>Investidor</option></select></label><label id="investorField">Investidor<select name="investorId" id="investorSelect"></select></label><label>Data<input name="date" type="date" required></label><label>Valor<input name="amount" type="number" step=".01" required></label><label>Valor da lata<input name="canPrice" type="number" step=".01"></label><label>Latas<input id="canPreview" readonly></label><label class="full">Observações<textarea name="notes"></textarea></label></div><button class="primary-button">Salvar</button></form></dialog><dialog id="clientDialog"><form id="clientForm"><h2>Novo cliente</h2><div class="form-grid"><label>Nome/Razão social<input name="name" required></label><label>CPF/CNPJ<input name="document"></label><label>Tipo<select name="type"><option>Indústria</option><option>Exportador</option><option>Atacadista</option><option>Revendedor</option><option>Outro</option></select></label><label>WhatsApp<input name="phone"></label><label>E-mail<input name="email"></label><label>Cidade/UF<input name="city"></label><label>Limite de crédito<input name="creditLimit" type="number" step=".01"></label><label>Condição<select name="paymentTerm"><option>À vista</option><option>7 dias</option><option>15 dias</option><option>30 dias</option><option>Personalizada</option></select></label><label class="full">Observações<textarea name="notes"></textarea></label></div><button class="primary-button">Salvar cliente</button></form></dialog><dialog id="saleDialog"><form id="saleForm"><h2>Novo pedido</h2><div class="form-grid"><label>Cliente<select name="clientId" id="saleClientSelect" required></select></label><label>Data<input name="date" type="date" required></label><label>Quantidade<input name="quantity" type="number" step=".01" required></label><label>Preço por lata<input name="unitPrice" type="number" step=".01" required></label><label>Pagamento<select name="paymentTerm"><option>À vista</option><option>7 dias</option><option>15 dias</option><option>30 dias</option><option>Personalizada</option></select></label><label>Previsão de entrega<input name="deliveryDate" type="date"></label><label>Validade da reserva<input name="reserveUntil" type="date"></label><label>Comissão %<input name="commissionPct" type="number" step=".01" value="0"></label><label>Custos<input name="extraCosts" type="number" step=".01" value="0"></label><label>Desconto<input name="discount" type="number" step=".01" value="0"></label><label class="full">Observações<textarea name="notes"></textarea></label></div><button class="primary-button">Salvar pedido</button></form></dialog><dialog id="saleActionDialog"><form id="saleActionForm"><input name="saleId" type="hidden"><input name="action" type="hidden"><h2 id="saleActionTitle">Atualizar venda</h2><div class="form-grid"><label id="saleActionQtyLabel">Quantidade<input name="quantity" type="number" step=".01"></label><label>Data<input name="date" type="date" required></label><label class="full">Motivo/observação<textarea name="notes"></textarea></label></div><button class="primary-button">Confirmar</button></form></dialog><script src="app.js"></script><script src="sales.js"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#173f2c">
+  <meta name="description" content="Cadastro inicial do aplicativo Natural Castanhas.">
+  <title>Natural Castanhas — Cadastro inicial</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="141FEC0C-C074-45A3-84B5-4538207A5C5E.png">
+  <link rel="apple-touch-icon" href="141FEC0C-C074-45A3-84B5-4538207A5C5E.png">
+  <link rel="stylesheet" href="nova-versao/styles.css?v=20260731-1">
+  <!--
+    LEGACY-SCRIPT-GUARD:
+    nucleo3-integrado.js nucleo3-melhorias.js nucleo4-estoque.js ios-form-fix.js
+    nucleo8-link.js nucleo10-link.js nucleo11-usuarios.js barra-inferior.js
+    data-safety.js flow-health.js nucleo0.js admin-bootstrap.js auth-gate.js
+    admin-center.js admin-inicial-tiago.js password-recovery.js cadastro-pessoa.js
+    auth-login-hotfix.js dashboard-consolidado.js
+  -->
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="app-header">
+      <a class="brand" href="#inicio" data-route="landingView" aria-label="Natural Castanhas — início">
+        <span class="brand-mark" aria-hidden="true">NC</span>
+        <span>
+          <strong>Natural Castanhas</strong>
+          <small>Nova estrutura do aplicativo</small>
+        </span>
+      </a>
+      <span class="version-badge">Cadastro v1</span>
+    </header>
+
+    <main class="main-shell">
+      <section class="view active" id="landingView" aria-labelledby="landingTitle">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <p class="eyebrow">Recomeço seguro</p>
+            <h1 id="landingTitle">Bem-vindo ao Natural Castanhas</h1>
+            <p class="lead">Esta é a nova entrada do aplicativo, construída do zero para organizar cadastro, acesso e permissões sem carregar os scripts da versão anterior.</p>
+          </div>
+
+          <div class="hero-status" aria-label="Situação da nova estrutura">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Base administrativa preparada</strong>
+              <small>2 administradores iniciais cadastrados na estrutura.</small>
+            </div>
+          </div>
+
+          <div class="primary-actions">
+            <button class="button primary" type="button" data-route="registrationView">Realizar primeiro cadastro</button>
+            <button class="button secondary" type="button" data-route="accessView">Já possuo cadastro</button>
+          </div>
+        </div>
+
+        <section class="info-grid" aria-label="Estrutura inicial">
+          <article class="info-card">
+            <span class="info-number">01</span>
+            <h2>Cadastro por etapas</h2>
+            <p>Identificação, contato, vínculo operacional, acesso e revisão final.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-number">02</span>
+            <h2>Aprovação administrativa</h2>
+            <p>Novos usuários entram como solicitação pendente e não recebem perfil de administrador automaticamente.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-number">03</span>
+            <h2>Versão antiga preservada</h2>
+            <p>A página anterior continua arquivada no repositório para consulta e recuperação.</p>
+          </article>
+        </section>
+
+        <details class="admin-details">
+          <summary>Ver administradores iniciais</summary>
+          <div class="admin-list" id="adminList"></div>
+        </details>
+      </section>
+
+      <section class="view" id="registrationView" aria-labelledby="registrationTitle">
+        <div class="page-heading">
+          <button class="back-button" type="button" data-route="landingView" aria-label="Voltar ao início">←</button>
+          <div>
+            <p class="eyebrow">Primeiro cadastro</p>
+            <h1 id="registrationTitle">Criar solicitação de acesso</h1>
+          </div>
+        </div>
+
+        <div class="wizard-card">
+          <div class="progress-header">
+            <div>
+              <span id="stepLabel">Etapa 1 de 5</span>
+              <strong id="stepTitle">Identificação</strong>
+            </div>
+            <span id="progressPercent">20%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+
+          <ol class="step-dots" aria-label="Etapas do cadastro">
+            <li class="active" data-step-dot="1"><span>1</span><small>Identificação</small></li>
+            <li data-step-dot="2"><span>2</span><small>Contato</small></li>
+            <li data-step-dot="3"><span>3</span><small>Operação</small></li>
+            <li data-step-dot="4"><span>4</span><small>Acesso</small></li>
+            <li data-step-dot="5"><span>5</span><small>Revisão</small></li>
+          </ol>
+
+          <form id="registrationForm" novalidate>
+            <fieldset class="form-step active" data-step="1">
+              <legend>Dados de identificação</legend>
+              <p class="step-description">Informe os dados da pessoa que utilizará o aplicativo.</p>
+              <div class="form-grid">
+                <label class="full">Nome completo
+                  <input name="fullName" autocomplete="name" maxlength="120" required placeholder="Digite o nome completo">
+                  <span class="field-error" data-error-for="fullName"></span>
+                </label>
+                <label>CPF
+                  <input name="cpf" inputmode="numeric" autocomplete="off" maxlength="14" required placeholder="000.000.000-00">
+                  <span class="field-error" data-error-for="cpf"></span>
+                </label>
+                <label>Data de nascimento
+                  <input name="birthDate" type="date" required>
+                  <span class="field-error" data-error-for="birthDate"></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="2">
+              <legend>Contato</legend>
+              <p class="step-description">Estes dados serão utilizados para comunicação e recuperação futura de acesso.</p>
+              <div class="form-grid">
+                <label>WhatsApp
+                  <input name="phone" inputmode="tel" autocomplete="tel" maxlength="16" required placeholder="(69) 99999-9999">
+                  <span class="field-error" data-error-for="phone"></span>
+                </label>
+                <label>E-mail
+                  <input name="email" type="email" autocomplete="email" maxlength="160" required placeholder="nome@exemplo.com">
+                  <span class="field-error" data-error-for="email"></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="3">
+              <legend>Vínculo com a operação</legend>
+              <p class="step-description">Defina onde o usuário atuará e qual perfil precisa solicitar.</p>
+              <div class="form-grid">
+                <label class="full">Empresa
+                  <input name="company" value="Natural Castanhas" readonly>
+                </label>
+                <label>Função ou cargo
+                  <input name="jobTitle" maxlength="80" required placeholder="Ex.: responsável financeiro">
+                  <span class="field-error" data-error-for="jobTitle"></span>
+                </label>
+                <label>Perfil solicitado
+                  <select name="requestedRole" required>
+                    <option value="">Selecione</option>
+                    <option value="Gestor operacional">Gestor operacional</option>
+                    <option value="Compras e fornecedores">Compras e fornecedores</option>
+                    <option value="Estoque e logística">Estoque e logística</option>
+                    <option value="Financeiro e resultados">Financeiro e resultados</option>
+                    <option value="Vendas e clientes">Vendas e clientes</option>
+                    <option value="Consulta e relatórios">Consulta e relatórios</option>
+                  </select>
+                  <span class="field-error" data-error-for="requestedRole"></span>
+                </label>
+                <label>Cidade
+                  <input name="city" maxlength="80" required placeholder="Cidade">
+                  <span class="field-error" data-error-for="city"></span>
+                </label>
+                <label>Estado
+                  <select name="state" required>
+                    <option value="">Selecione</option>
+                    <option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option>
+                    <option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option>
+                    <option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option>
+                    <option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option>
+                    <option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option>
+                    <option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option>
+                    <option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option>
+                    <option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option>
+                    <option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option>
+                  </select>
+                  <span class="field-error" data-error-for="state"></span>
+                </label>
+              </div>
+              <div class="security-note">
+                <strong>Regra de segurança</strong>
+                <p>O perfil Administrador não pode ser solicitado pelo cadastro público. Somente Tiago Pereira de Albuquerque e Hélio da Silva Pereira iniciam com essa função.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="4">
+              <legend>Identificação de acesso</legend>
+              <p class="step-description">Crie o nome de usuário. A senha será definida após aprovação e conexão do banco de dados seguro.</p>
+              <div class="form-grid">
+                <label class="full">Nome de usuário
+                  <input name="username" autocomplete="username" maxlength="40" required placeholder="Ex.: nome.sobrenome">
+                  <span class="field-hint">Use letras, números, ponto, hífen ou sublinhado.</span>
+                  <span class="field-error" data-error-for="username"></span>
+                </label>
+                <label class="checkbox-label full">
+                  <input name="termsAccepted" type="checkbox" required>
+                  <span>Confirmo que os dados são verdadeiros e autorizo o envio da solicitação para análise dos administradores.</span>
+                  <span class="field-error" data-error-for="termsAccepted"></span>
+                </label>
+              </div>
+              <div class="security-note neutral">
+                <strong>Credenciais ainda não são armazenadas</strong>
+                <p>Esta primeira versão cria apenas a estrutura cadastral. Senhas e autenticação serão implementadas com banco seguro, sem gravar senha no navegador.</p>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="5">
+              <legend>Revisão final</legend>
+              <p class="step-description">Confira os dados antes de registrar a solicitação.</p>
+              <div class="review-grid" id="reviewGrid"></div>
+              <div class="security-note neutral">
+                <strong>Situação após o envio</strong>
+                <p>O cadastro ficará como “Aguardando aprovação”. O usuário ainda não terá acesso aos núcleos do sistema.</p>
+              </div>
+            </fieldset>
+
+            <div class="wizard-actions">
+              <button class="button ghost" id="previousStep" type="button" hidden>Voltar</button>
+              <button class="button primary" id="nextStep" type="button">Continuar</button>
+              <button class="button primary" id="submitRegistration" type="submit" hidden>Enviar cadastro</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="view" id="accessView" aria-labelledby="accessTitle">
+        <div class="page-heading">
+          <button class="back-button" type="button" data-route="landingView" aria-label="Voltar ao início">←</button>
+          <div>
+            <p class="eyebrow">Situação do acesso</p>
+            <h1 id="accessTitle">Consultar cadastro</h1>
+          </div>
+        </div>
+
+        <div class="access-card">
+          <p>Informe o nome completo, o nome de usuário ou o e-mail cadastrado.</p>
+          <form id="accessLookupForm">
+            <label>Identificação
+              <input name="lookup" autocomplete="username" required placeholder="Digite sua identificação">
+            </label>
+            <button class="button primary" type="submit">Consultar situação</button>
+          </form>
+          <div class="lookup-result" id="lookupResult" hidden aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="view" id="successView" aria-labelledby="successTitle">
+        <div class="success-card">
+          <span class="success-icon" aria-hidden="true">✓</span>
+          <p class="eyebrow">Cadastro registrado</p>
+          <h1 id="successTitle">Solicitação enviada para aprovação</h1>
+          <p>O cadastro foi salvo nesta estrutura inicial com a situação <strong>Aguardando aprovação</strong>.</p>
+          <div class="protocol-card">
+            <span>Protocolo local</span>
+            <strong id="registrationProtocol"></strong>
+          </div>
+          <button class="button primary" type="button" data-route="landingView">Voltar ao início</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <footer class="app-footer">Natural Castanhas · Estrutura cadastral iniciada em 31/07/2026</footer>
+  </div>
+
+  <script src="nova-versao/app.js?v=20260731-1" defer></script>
+</body>
+</html>
