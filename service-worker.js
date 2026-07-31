@@ -1,10 +1,81 @@
-const CACHE='natural-castanhas-v35';
-const FILES=['./index.html','./styles.css','./ios-form-fix.css','./app.js','./sales.js','./financeiro.js','./resultados.js','./relatorios.js','./nucleo9-nome.js','./ios-form-fix.js','./nucleo3-integrado.js','./nucleo3-melhorias.js','./nucleo4-estoque.js','./nucleo8-link.js','./nucleo10-link.js','./nucleo11-usuarios.js','./nucleo12-link.js','./barra-inferior.js','./data-safety.js','./flow-health.js','./nucleo0.js','./admin-bootstrap.js','./auth-gate.js','./admin-center.js','./admin-inicial-tiago.js','./password-recovery.js','./cadastro-pessoa.js','./auth-login-hotfix.js','./layout-nucleos-fix.js','./liberacao-helio.js','./nucleo-8-transporte.html','./nucleo-10-documentos.html','./manifest.webmanifest'];
-self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)))});
-self.addEventListener('activate',event=>{event.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key))))]))});
+const CACHE='natural-castanhas-v36';
+const CORE_FILES=[
+  './index.html','./styles.css','./ios-form-fix.css','./app.js','./sales.js','./financeiro.js',
+  './resultados.js','./relatorios.js','./ios-form-fix.js','./nucleo3-integrado.js',
+  './nucleo3-melhorias.js','./nucleo4-estoque.js','./nucleo8-link.js','./nucleo10-link.js',
+  './nucleo11-usuarios.js','./barra-inferior.js','./data-safety.js','./flow-health.js',
+  './nucleo0.js','./admin-bootstrap.js','./auth-gate.js','./admin-center.js',
+  './admin-inicial-tiago.js','./password-recovery.js','./cadastro-pessoa.js',
+  './auth-login-hotfix.js','./dashboard-consolidado.js','./nucleo-8-transporte.html',
+  './nucleo-10-documentos.html','./manifest.webmanifest'
+];
+
+const PAGE_SCRIPTS=[
+  'nucleo3-integrado.js','nucleo3-melhorias.js','nucleo4-estoque.js','ios-form-fix.js',
+  'nucleo8-link.js','nucleo10-link.js','nucleo11-usuarios.js','barra-inferior.js',
+  'data-safety.js','flow-health.js','nucleo0.js','admin-bootstrap.js','auth-gate.js',
+  'admin-center.js','admin-inicial-tiago.js','password-recovery.js','cadastro-pessoa.js',
+  'auth-login-hotfix.js','dashboard-consolidado.js'
+];
+
+self.addEventListener('install',event=>{
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE_FILES)));
+});
+
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+
+async function homeResponse(request){
+  let response;
+  try{
+    response=await fetch(request,{cache:'no-store'});
+    const cache=await caches.open(CACHE);
+    cache.put('./index.html',response.clone());
+  }catch(error){
+    response=await caches.match('./index.html');
+  }
+  if(!response)return new Response('Aplicativo indisponível.',{status:503});
+
+  let html=await response.text();
+  if(!html.includes('ios-form-fix.css')){
+    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=36"></head>');
+  }
+  PAGE_SCRIPTS.forEach(name=>{
+    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=36"></script></body>`);
+  });
+  return new Response(html,{
+    status:response.status,
+    statusText:response.statusText,
+    headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}
+  });
+}
+
 self.addEventListener('fetch',event=>{
- const url=new URL(event.request.url),isHome=event.request.mode==='navigate'&&(url.pathname.endsWith('/')||url.pathname.endsWith('/index.html'));
- if(isHome){event.respondWith((async()=>{let response;try{response=await fetch(event.request,{cache:'no-store'})}catch(error){response=await caches.match('./index.html')}let html=await response.text();if(!html.includes('ios-form-fix.css'))html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=35"></head>');const required=[['nucleo3-integrado.js','<script src="./nucleo3-integrado.js?v=35"></script>'],['nucleo3-melhorias.js','<script src="./nucleo3-melhorias.js?v=35"></script>'],['nucleo4-estoque.js','<script src="./nucleo4-estoque.js?v=35"></script>'],['ios-form-fix.js','<script src="./ios-form-fix.js?v=35"></script>'],['nucleo8-link.js','<script src="./nucleo8-link.js?v=35"></script>'],['nucleo9-nome.js','<script src="./nucleo9-nome.js?v=35"></script>'],['nucleo10-link.js','<script src="./nucleo10-link.js?v=35"></script>'],['nucleo11-usuarios.js','<script src="./nucleo11-usuarios.js?v=35"></script>'],['nucleo12-link.js','<script src="./nucleo12-link.js?v=35"></script>'],['barra-inferior.js','<script src="./barra-inferior.js?v=35"></script>'],['data-safety.js','<script src="./data-safety.js?v=35"></script>'],['flow-health.js','<script src="./flow-health.js?v=35"></script>'],['nucleo0.js','<script src="./nucleo0.js?v=35"></script>'],['admin-bootstrap.js','<script src="./admin-bootstrap.js?v=35"></script>'],['auth-gate.js','<script src="./auth-gate.js?v=35"></script>'],['admin-center.js','<script src="./admin-center.js?v=35"></script>'],['admin-inicial-tiago.js','<script src="./admin-inicial-tiago.js?v=35"></script>'],['password-recovery.js','<script src="./password-recovery.js?v=35"></script>'],['cadastro-pessoa.js','<script src="./cadastro-pessoa.js?v=35"></script>'],['auth-login-hotfix.js','<script src="./auth-login-hotfix.js?v=35"></script>'],['layout-nucleos-fix.js','<script src="./layout-nucleos-fix.js?v=35"></script>'],['liberacao-helio.js','<script src="./liberacao-helio.js?v=35"></script>']];required.forEach(([name,tag])=>{if(!html.includes(name))html=html.replace('</body>',tag+'</body>')});return new Response(html,{status:200,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store, no-cache, must-revalidate'}})})());return}
- if(url.origin===location.origin&&['script','style'].includes(event.request.destination)){event.respondWith(fetch(event.request,{cache:'no-store'}).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match(event.request)));return}
- event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request)));
+  if(event.request.method!=='GET')return;
+  const url=new URL(event.request.url);
+  const isHome=event.request.mode==='navigate'&&(url.pathname.endsWith('/')||url.pathname.endsWith('/index.html'));
+
+  if(isHome){event.respondWith(homeResponse(event.request));return;}
+
+  if(url.origin===self.location.origin&&['script','style'].includes(event.request.destination)){
+    event.respondWith((async()=>{
+      try{
+        const response=await fetch(event.request,{cache:'no-store'});
+        const cache=await caches.open(CACHE);
+        cache.put(event.request,response.clone());
+        return response;
+      }catch(error){
+        return (await caches.match(event.request))||Response.error();
+      }
+    })());
+    return;
+  }
+
+  event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request)));
 });
