@@ -1,33 +1,18 @@
 {
   "name": "Natural Castanhas",
   "short_name": "Natural Castanhas",
-  "start_url": "./",
+  "start_url": "./#inicio",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#24552a",
-  "description": "Gestão integrada das operações do mercado de castanhas.",
+  "background_color": "#f8faf7",
+  "theme_color": "#173f2c",
+  "description": "Cadastro inicial e controle de acesso do aplicativo Natural Castanhas.",
   "icons": [
     {
       "src": "141FEC0C-C074-45A3-84B5-4538207A5C5E.png",
       "sizes": "1254x1254",
       "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Documentos e Conformidade",
-      "short_name": "Documentos",
-      "description": "Abrir o Núcleo 10 de documentos, contratos e conformidade.",
-      "url": "./nucleo-10-documentos.html",
-      "icons": [
-        {
-          "src": "141FEC0C-C074-45A3-84B5-4538207A5C5E.png",
-          "sizes": "1254x1254",
-          "type": "image/png"
-        }
-      ]
     }
   ]
 }
