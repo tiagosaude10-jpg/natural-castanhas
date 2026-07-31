@@ -1,4 +1,4 @@
-const CACHE_NAME = 'natural-castanhas-cadastro-v1-20260731';
+const CACHE_NAME = 'natural-castanhas-cadastro-v2-20260731';
 const APP_SHELL = [
   './',
   './index.html',
