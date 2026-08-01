@@ -1,4 +1,4 @@
-const CACHE='natural-castanhas-v36';
+const CACHE='natural-castanhas-versao1-nucleos-20260801';
 const CORE_FILES=[
   './index.html','./styles.css','./ios-form-fix.css','./app.js','./sales.js','./financeiro.js',
   './resultados.js','./relatorios.js','./ios-form-fix.js','./nucleo3-integrado.js',
@@ -44,10 +44,10 @@ async function homeResponse(request){
 
   let html=await response.text();
   if(!html.includes('ios-form-fix.css')){
-    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=36"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=37"></head>');
   }
   PAGE_SCRIPTS.forEach(name=>{
-    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=36"></script></body>`);
+    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=37"></script></body>`);
   });
   return new Response(html,{
     status:response.status,
