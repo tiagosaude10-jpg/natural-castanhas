@@ -1,4 +1,4 @@
-const CACHE='natural-castanhas-versao1-nucleos-20260801';
+const CACHE='natural-castanhas-etapa1-20260806';
 const CORE_FILES=[
   './index.html','./styles.css','./ios-form-fix.css','./app.js','./sales.js','./financeiro.js',
   './resultados.js','./relatorios.js','./ios-form-fix.js','./nucleo3-integrado.js',
@@ -6,7 +6,7 @@ const CORE_FILES=[
   './nucleo11-usuarios.js','./barra-inferior.js','./data-safety.js','./flow-health.js',
   './nucleo0.js','./admin-bootstrap.js','./auth-gate.js','./admin-center.js',
   './admin-inicial-tiago.js','./password-recovery.js','./cadastro-pessoa.js',
-  './auth-login-hotfix.js','./dashboard-consolidado.js','./nucleo-8-transporte.html',
+  './auth-login-hotfix.js','./dashboard-consolidado.js','./dashboard-etapa1.js','./nucleo-8-transporte.html',
   './nucleo-10-documentos.html','./manifest.webmanifest'
 ];
 
@@ -15,7 +15,7 @@ const PAGE_SCRIPTS=[
   'nucleo8-link.js','nucleo10-link.js','nucleo11-usuarios.js','barra-inferior.js',
   'data-safety.js','flow-health.js','nucleo0.js','admin-bootstrap.js','auth-gate.js',
   'admin-center.js','admin-inicial-tiago.js','password-recovery.js','cadastro-pessoa.js',
-  'auth-login-hotfix.js','dashboard-consolidado.js'
+  'auth-login-hotfix.js','dashboard-consolidado.js','dashboard-etapa1.js'
 ];
 
 self.addEventListener('install',event=>{
@@ -44,10 +44,10 @@ async function homeResponse(request){
 
   let html=await response.text();
   if(!html.includes('ios-form-fix.css')){
-    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=37"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="./ios-form-fix.css?v=38"></head>');
   }
   PAGE_SCRIPTS.forEach(name=>{
-    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=37"></script></body>`);
+    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=38"></script></body>`);
   });
   return new Response(html,{
     status:response.status,
